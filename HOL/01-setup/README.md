@@ -80,7 +80,7 @@ This hands-on-lab has the following exercises:
 1. Clone the repository from its source
 
     ```powershell
-    git clone https://github.com/AzureCAT-GSI/AppMigrationWorkshop
+    git clone https://github.com/Azure-Samples/LegacyDotNetAppMigrationWorkshop.git
     ```
 
 ### Exercise 3: Deployment of Azure resources<a name="ex3"></a>
