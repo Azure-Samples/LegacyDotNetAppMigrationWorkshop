@@ -99,8 +99,9 @@
     <Content Include="dsc\xNetworking\Examples\Sample_xIPAddress_Parameterized.ps1" />
     <Content Include="dsc\xNetworking\xNetworking.psd1" />
     <Content Include="dsc\xNetworking\xNetworking_TechNetDocumentation.html" />
-    <Content Include="scripts\ConfigureSQL.ps1" />
-    <Content Include="scripts\StartConfigureSQL.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scripts\" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

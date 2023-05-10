@@ -32,7 +32,7 @@ try
     # $client.DownloadFile($url, $localPath) 
     
     log -message "Enabling .NET 3.5" -logFile $logFile
-    dism /online /enable-feature /featurename:NetFx3
+    DISM /Online /Enable-Feature /FeatureName:NetFx3 /All
     
     log -message "Checking if SQL installer was downloaded" -logFile $logFile
     if (Test-Path (Join-Path "$scriptFolder" "SQLEXPRADV_x64_ENU") )
@@ -45,7 +45,7 @@ try
     }
     
     log -message "Extracting SQL package" -logFile $logFile
-    & "$scriptFolder\..\SQLEXPRADV_x64_ENU" /Q /X:$sqlInstallerPath
+    & "$scriptFolder\SQLEXPRADV_x64_ENU" /Q /X:$sqlInstallerPath
     
     while ( (get-process -Name SQLEXPRADV_x64_ENU -ErrorAction SilentlyContinue) -ne $null) { log -message "   extracting Files..." -logFile $logFile ; Start-Sleep -seconds 2}
     
