@@ -93,7 +93,7 @@ For this HoL, we are going to use the template for [Deploying a Web App with cus
    git checkout -b feature/add-infra-support
    ```
 4. Create a folder, .github/workflows, in your GitHub repo with your application. 
-5. Locate the [App Service Environment Pipeline](./.github/workflows/build-app-service-environment.yaml) in this repo. Place the file in the .github/workflows folder you created  in the previous step.
+5. Locate the [App Service Environment Workflow](./.github/workflows/build-app-service-environment.yaml) and the [App Service Destroy Environment Workflow](./.github/workflows/destroy-app-service-environment.yaml) in this repo. Place the files in the .github/workflows folder you created  in the previous step.
 6. The code below will add all the files to track and commit them to your GitHub repo. From the root directory of the project:
 
       ```bash
@@ -135,8 +135,7 @@ Once your workflow completes successfully, you will see the following resources 
 
 With the code in GitHub, the CI/CD pipeline needs to be configured. For this lab, we will be creating a GitHub workflow to deploy to Azure App Service. The workflow has already been written for you and will need to be copied from this repository to your GitHub repository. 
 
-1. For this workflow, you will need to add two variables to your GitHub repository:
-   
+1. For this workflow, you will need to one secret to your GitHub repository for the App Service Publish Profile. Navigate to your App Service in the Portal and download the publish profile. Copy the contents into a new secret in your GitHub repository. 
 2. Create a new branch called "feature/add-workflow-app-service" by running the following command:
 **   Before executing this command, ensure you are on the main branch and have fetched the origin.
 **   
@@ -144,20 +143,22 @@ With the code in GitHub, the CI/CD pipeline needs to be configured. For this lab
    git fetch 
    git checkout -b feature/add-workflow-app-service
    ```
-1. Create a folder, .github/workflows, in your GitHub repo with your application. 
-2. Locate the [App Service Deployment Pipeline](./.github/workflows/deploy-app-service.yml) in this repo. Place the file in the .github/workflows folder you created  in the previous step.
-3. Run the following commands to commit your changes to your branch 
-4. Submit a Pull Request to main from your branch through GitHub. Once the Pull Request has been created, hit Merge, type a meaningful commit message and merge your branch. 
+1. Locate the [App Service Deployment Pipeline](./.github/workflows/deploy-app-service.yml) in this repo. Place the file in the .github/workflows folder you created  in the previous exercise.
+2. Run the following commands to commit your changes to your branch 
+3. Submit a Pull Request to main from your branch through GitHub. Once the Pull Request has been created, hit Merge, type a meaningful commit message and merge your branch. 
 
 After completing the above steps, naviagte to the *Actions* tab at the top of the screen. You will see a run has kicked off with your newly added workflow. Wait a couple of minutes after the workflow has completed and proceed to the next section. 
 
 ### Exercise 4:  Test<a name="ex4"></a>
 
-----
-
 1. With the successful deployment, open your Azure Portal and navigate to the WebApp.
 
 1. Click on the url to launch the site.
+
+### Cleanup
+
+1. Navigate to the *Actions* tab in your GitHub repository and find the workflow named *Destroy Azure App Service Environment*. 
+2. Click *Run workflow*. This workflow will destroy the infrastructure environment and your application running on the App Service. 
 
 ## References
 
