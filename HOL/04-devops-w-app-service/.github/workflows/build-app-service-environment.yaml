@@ -30,4 +30,4 @@ jobs:
               with:
                 resourceGroupName: ${{ vars.AZURE_RG }}
                 template: https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.web/webapp-custom-deployment-slots/azuredeploy.json
-                parameters: baseResourceName=<Replace with resource name> appSettingName=<Replace with app service name>
+                parameters: baseResourceName=${{ vars.APP_NAME }} appSettingName=${{ vars.APP_NAME }}

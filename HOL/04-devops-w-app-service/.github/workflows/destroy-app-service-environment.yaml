@@ -1,4 +1,4 @@
-name: Build and deploy Azure App Service Environment
+name: Destroy Azure App Service Environment
 
 on:
     workflow_dispatch:
