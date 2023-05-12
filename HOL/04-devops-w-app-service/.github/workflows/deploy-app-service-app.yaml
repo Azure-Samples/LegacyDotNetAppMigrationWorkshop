@@ -1,16 +1,15 @@
 name: Build and deploy .NET 7.0 app to Azure App Service 
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
 
 jobs:
     build:
-        environment: "Production"
         runs-on: ubuntu-latest
         env:
-          DOTNET_ROOT: "/sampleapp"
           DOTNET_VERSION: '7.0.x'
         steps:
             - uses: actions/checkout@v3
@@ -21,25 +20,26 @@ jobs:
                 dotnet-version: ${{ env.DOTNET_VERSION }}
     
             - name: Build with dotnet
-              run: dotnet build --configuration Release
+              run: |
+                cd dotnetapp
+                dotnet build --configuration Release
     
             - name: dotnet publish
-              run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/dotnetapp
+              run: |
+                cd dotnetapp
+                dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/dotnetapp
     
             - name: Upload artifact for deployment job
               uses: actions/upload-artifact@v3
               with:
-                name: dotnetapp
-                path: ${{ env.DOTNET_ROOT }}/dotnetapp 
+                name: sampleapp
+                path: ${{env.DOTNET_ROOT}}/dotnetapp
     deploy:
-        environment: 
-            name: "Production"
-            url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
         runs-on: ubuntu-latest
-
+        needs: build
         steps:
             - name: Download artifact from build job
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
                 name: dotnetapp
 
@@ -48,6 +48,6 @@ jobs:
               uses: azure/webapps-deploy@v2
               with:
                 app-name: ${{ vars.APP_NAME}}
-                slot-name: 'Production'
+                slot-name: 'Dev'
                 publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
                 package: .
