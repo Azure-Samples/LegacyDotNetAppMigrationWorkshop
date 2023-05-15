@@ -59,7 +59,7 @@ For the purpose of this lab, we are going to create a .NET 7.0 application.
     ![Base App Screenshot](media/BaseAppScreenshot.png)
 6. Stop running the app locally by doing ```Ctrl + C``` in the PowerShell terminal. 
    
-Before adding the application files to the repository, we will define files that we don't want to track in the repo.
+   Before adding the application files to the repository, we will define files that we don't want to track in the repo.
 
 7. Create a file called `.gitignore` in the root of the directory by running the following command:
    ```powershell
@@ -104,20 +104,23 @@ For this HoL, we are going to use the template for [Deploying a Web App with cus
 8.  [Register an app in the Azure portal for your application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
 9.  Give you application [Federated credentials](https://learn.microsoft.com/azure/active-directory/workload-identities/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#github-actions). Federated credentials allow certain services such as GitHub to have permission to deploy Azure resources without having to specify a client secret. It sends a claim to Azure which then returns a token. 
 
-  Use the following values for the credential:
-    - Organization = #Your GitHub Organization Name
-    - Repository = #Your Repository Name
-    - Entity Type = branch
-    - Github branch name = main
-    - Name = GitHubDeployMain
+    Use the following values for the credential:
+    
+      - Organization = #Your GitHub Organization Name
+      - Repository = #Your Repository Name
+      - Entity Type = branch
+      - Github branch name = main
+      - Name = GitHubDeployMain
     
 10.  Create the following secrets in your repository with the corresponding values from the application you just created:
-    - AZURE_CLIENT_ID = #Application Client Id
-    - AZURE_TENANT_ID = #Application Tenant Id
-    - AZURE_SUBSCRIPTION_ID = #Your Azure Subscription Id
+         
+         - AZURE_CLIENT_ID = #Application Client Id
+         - AZURE_TENANT_ID = #Application Tenant Id
+         - AZURE_SUBSCRIPTION_ID = #Your Azure Subscription Id
 11.  Create the following variables in your repository:
-    - AZURE_RG = #Choose a name for the resource group
-    - LOCATION = #Choose a location for your resources
+         
+         - AZURE_RG = #Choose a name for the resource group
+         - LOCATION = #Choose a location for your resources
 12.  Navigate to the *Actions* tab and locate your workflow on the left sidebar (Build and deploy Azure App Service Environment).
 13.  Click the drop dropdown that says *Run workflow* and click *Run workflow*
    ![GitHub workflow](media/GitHub%20Workflow%20Not%20run.png)
