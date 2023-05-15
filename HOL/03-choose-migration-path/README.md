@@ -4,7 +4,9 @@
 
 .NET application configurations vary depending on organizational requirements, security requirements and age of source code. With enterprise customers, you will typically encounter older .NET applications using .NET framework and earlier versions of .NET Core. Customers that are using modern .NET versions like 6 and 7 have an easier migration path because those versions are supported by all Azure PaaS Services. Those with older applications face several key organizational decisions around authentication, database migration and how much control they want over their environment. 
 
-In the decision tree above, you will notice three migration options: Azure App Service, Azure Kubernetes Service, and Azure Virtual Machines. 
+In the decision tree above, you will notice three migration options: [Azure App Service](https://learn.microsoft.com/azure/app-service/), [Azure Kubernetes Service](https://learn.microsoft.com/azure/aks/), and [Azure Virtual Machines](https://learn.microsoft.com/azure/virtual-machines/). Below you'll find a brief description of each option and what customer conditions warrant using each. 
+
+# Basic Migrations Options
 
 ## Azure App Service
 
@@ -22,4 +24,9 @@ Customers running .NET framework applications can use AKS, but they need to be m
 
 ## Azure Virtual Machines
 
-Migrating from on premises to Azure Virtual Machines is the simplest option for moving customers to the cloud. It has the most parity with their current infrastructure on premises with the added features of Azure including vertical and horizontal scaling, availability zones, automated backups and Integration with other Azure services such as [Azure Storage](https://learn.microsoft.com/azure/storage/common/storage-introduction) and [Azure Site Recovery](https://learn.microsoft.com/azure/virtual-machines/overview). 
+Migrating from on premises to Azure Virtual Machines is the simplest option for moving customers to the cloud. It has the most parity with infrastructure on premises with the added features of Azure including vertical and horizontal scaling, availability zones, automated backups and Integration with other Azure services such as [Azure Storage](https://learn.microsoft.com/azure/storage/common/storage-introduction) and [Azure Site Recovery](https://learn.microsoft.com/azure/virtual-machines/overview). 
+
+# Additional Migration Options
+
+## Azure Container Apps
+[Azure Container Apps](https://learn.microsoft.com/azure/container-apps/compare-options#azure-container-apps) are backed by AKS and are ideally suited for microservices running containers.    
