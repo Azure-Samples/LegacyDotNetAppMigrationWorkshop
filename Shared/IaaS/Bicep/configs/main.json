@@ -1,0 +1,31 @@
+{
+    "location": "eastus",
+    "resourceGroup": "appmigworkshop",
+    "createStorage": true,
+    "blobContainerName": "appmigworkshop",
+    "resources": {
+        "virtualNetworkName": "app-mig-workshop-vnet",
+        "vmName": "app-vm-"
+    },
+    "vm":{
+        "publicIpName": "vmIP",
+        "publicIpSku": "Basic",
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsLabelPrefix": "",
+        "nicName": "myVMNic",
+        "vmSize": "Standard_D2s_v5",
+        "adminUsername": "vmadmin"     
+    },
+    "vnet":{
+        "subnetName": "default",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetPrefix":"10.0.0.0/24",
+        "networkSecurityGroupName": "default-NSG"
+    },
+    "tags": {
+        "environment": "app-mig-workshop"
+    },
+    "numberVms": 3,
+    "runCommand": "[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((Get-Content -LiteralPath \"$Env:SYSTEMDRIVE\\AzureData\\CustomData.bin\"))) | Invoke-Expression",
+    "initScript": ""
+}

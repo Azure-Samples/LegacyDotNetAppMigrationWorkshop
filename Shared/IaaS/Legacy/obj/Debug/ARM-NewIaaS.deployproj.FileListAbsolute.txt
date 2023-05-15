@@ -1,0 +1,1 @@
+C:\Users\robynellis\source\repos\LegacyDotNetAppMigrationWorkshop\Shared\ARM-NewIaaS\obj\Debug\ARM-NewIaaS.deployproj.CoreCompileInputs.cache

@@ -1,0 +1,44 @@
+[
+    {
+        "publisher": "MicrosoftSQLServer",
+        "offer": "SQL2008R2SP3-WS2008R2SP1",
+        "sku": "Express",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2012-R2-Datacenter",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2016-Datacenter",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2019-Datacenter",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "windows-10",
+        "sku": "win10-22h2-pro",
+        "version": "latest"
+    },
+    {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "windows-11",
+        "sku": "win11-22h2-pro",
+        "version": "latest"
+    }
+]
