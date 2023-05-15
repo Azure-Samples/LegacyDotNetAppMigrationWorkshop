@@ -1,4 +1,1 @@
-MOVED TO PPTX - case study
-
-
-TODO: BUILD HOL BASED ON APPS
+![Decision Tree](media/Decision%20Tree%20-%20NET.png)
