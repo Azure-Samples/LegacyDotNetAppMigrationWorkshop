@@ -10,7 +10,7 @@ Some legacy applications require native Windows functionality like:
 
 Containers are a good way to move applications to the cloud. Move the application to a container and retain this functionality.
 
-## Use the [Custom](../../HOL/07-windows-containers/site) application for this exercise
+## Use the [Custom application](../HOL/06-windows-containers/site/) for this exercise
 
 ## Helpful information
 

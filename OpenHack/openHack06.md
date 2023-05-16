@@ -2,7 +2,7 @@
 
 ---
 
-With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
+With the applications deployed into production, we need to monitor them both at the infrastructure and application level.
 
 ## Requirements
 

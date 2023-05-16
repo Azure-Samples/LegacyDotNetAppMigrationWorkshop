@@ -8,7 +8,7 @@ Now that you have the application working in a container, use your DevOps pipeli
 
 ## Helpful Info
 
-As part of Challenge 1, a container host was created for you. Use this.
+As part of Challenge 1, a container host was created for you. Use this to complete this challenge.
 
 ## Stretch
 

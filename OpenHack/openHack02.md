@@ -2,7 +2,7 @@
 
 ---
 
-Now that you have the source applications configured, create a cloud DevOps ready pipleline with CI/CD.
+Now that you have the source applications configured, create a cloud DevOps ready workflow with CI/CD.
 
 ## Create a New App
 
@@ -12,27 +12,27 @@ Application Requirements
 
 * Must display the node name on a page
 
-## Create Infra as Code
+## Create Infrastructure as Code
 
-This infrastructure is for the newly created app.
+This infrastructure is for the newly created application.
 
-Infrastucture requirements
+Infrastructure requirements
 
 * Single Region
 * Load balanced - Round Robin
 * Web Application
 
-## Use VSTS to enable CI/CD
+## Use GitHub Workflow for CI/CD
 
 * Deploy the newly created environment into a new Resource Group
-* Deploy the new app onto that env
+* Deploy the new app onto that environment
 
 ## Stretch
 
 * Add Geo Distribution
 * Add Application Insights
 * Add Blue/Green style performance
-* Enable AutoScale
-* Preform a Performance Test
+* Enable Automatic Scaling
+* Perform a Performance Test
 
 ## Helpful Links
