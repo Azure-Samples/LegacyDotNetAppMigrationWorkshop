@@ -1,0 +1,78 @@
+{    
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",    
+    "contentVersion": "1.0.0.0",    
+    "parameters": {        
+        "location": {            
+            "type": "string"        
+            },        
+        "resourceName": {            
+            "type": "string"        
+            },        
+        "sqlServerUsername": {            
+            "type": "securestring"        
+            },        
+        "sqlServerPassword": {            
+            "type": "securestring"        
+            }    
+        },    
+        "functions": [],    
+        "variables": {},    
+        "resources": [        
+            {            
+                "type": "Microsoft.Sql/servers",            
+                "apiVersion": "2021-11-01",            
+                "name": "[parameters('resourceName')]",            
+                "location": "[parameters('location')]",            
+                "tags": {},            
+                "properties": {                
+                    "administratorLogin": "[parameters('sqlServerUsername')]",                
+                    "administratorLoginPassword": "[parameters('sqlServerPassword')]"            
+                },            
+                "resources": [                
+                    {                    
+                        "type": "firewallRules",                    
+                        "apiVersion": "2021-11-01",
+                        "name": "AllowAllWindowsAzureIps",                    
+                        "location": "[parameters('location')]",                    
+                        "dependsOn": [                        
+                            "[resourceId('Microsoft.Sql/servers', parameters('resourceName'))]"                    
+                            ],                    
+                        "properties": {                        
+                            "startIpAddress": "0.0.0.0",                        
+                            "endIpAddress": "0.0.0.0"                    
+                            }                
+                    },                
+                    {                    
+                        "type": "firewallRules",                   
+                        "apiVersion": "2021-11-01",                    
+                        "name": "AllowAllExternalIps",                    
+                        "location": "[parameters('location')]",                    
+                        "dependsOn": [                        
+                            "[resourceId('Microsoft.Sql/servers', parameters('resourceName'))]"                    
+                            ],                    
+                        "properties": {                        
+                            "startIpAddress": "0.0.0.0",                        
+                            "endIpAddress": "255.255.255.255"                    
+                            }                
+                    }            
+                ]
+            },
+            {            
+                "type": "Microsoft.KeyVault/vaults",            
+                "apiVersion": "2022-11-01",            
+                "name": "[parameters('resourceName')]",            
+                "location": "[parameters('location')]",            
+                "tags": {},            
+                "properties": {                
+                    "enableRbacAuthorization": true,                
+                    "enableSoftDelete": false,                
+                    "tenantId": "[tenant().tenantId]",                
+                    "sku": {                    
+                        "name": "standard",                    
+                        "family": "A"                
+                        }            
+                        },            
+                "resources": []        
+            }
+        ]
+}
