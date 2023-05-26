@@ -75,7 +75,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
 }
 
 resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
-  name: 'vm-EnableIIS${year}${number}'
+  name: 'vm-EnableSQL${year}${number}'
   location: config.location
   parent: vm
   properties: {
