@@ -6,11 +6,13 @@ function DownloadAndExpand
     )
 
     Invoke-WebRequest "https://github.com/ivegamsft/AppMigrationWorkshop/raw/master/Shared/SourceApps/Apps/$AppName.zip" -OutFile "$AppName.zip"
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("$AppName.zip", "C:\Apps\$AppName")
+    Expand-Archive -Path "$AppName.zip" -DestinationPath "C:\Apps\$AppName"
     ((Get-Content -path C:\Apps\$AppName\web.config -Raw) -replace '<sqlServerName>.appmig.local',$env:computername) | Set-Content -Path C:\Apps\$AppName\web.config
    
     Write-Output "Downloaded the $AppName web app" 
 }
+
+#STAGE 1
 
 #update the execution policy
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
@@ -25,17 +27,20 @@ choco feature enable -n allowGlobalConfirmation
 #upgrade dot net (4.5.2)
 choco install dotnet4.5.2
 
-#add the compression assemblies to .net
+#upgrade powershell (5.1)
+#choco install powershell -Force 
 
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-Add-Type -AssemblyName System.IO.Compression
+#Reboot after install of powershell 5.1
+#Restart-Computer -Force
+
+####THIS IS WHERE STAGE 1 NEEDS TO END AND REBOOT
 
 #create user for the service account
 net user AppsSvcAcct password1234! /ADD
 c:\Windows\Microsoft.NET\Framework\v2.0.50727\aspnet_regiis.exe -ga ${env:computername}\AppsSvcAcct
 
 #install databases
-mkdir c:\Databases
+md c:\Databases
 SQLCMD -E -S ${env:computername} -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS"
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
@@ -52,8 +57,8 @@ SQLCMD -E -S ${env:computername} -Q "USE classifieds; CREATE USER [${env:compute
 SQLCMD -E -S ${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 
 SQLCMD -E -S ${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
+SQLCMD -E -S ${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'"
+SQLCMD -E -S ${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 
 
 #ensure web server feature is enabled
@@ -61,7 +66,7 @@ Add-WindowsFeature -Name Web-Server -IncludeAllSubFeature
 
 #install the "old" web apps from the app migration workshop
 c:\windows\system32\inetsrv\APPCMD delete site "Default Web Site"
-mikdir C:\Apps
+
 DownloadAndExpand -AppName "TimeTracker"
 c:\windows\system32\inetsrv\APPCMD add apppool /name:"TimeTrackerAppPool" /managedPipelineMode:"Integrated"
 c:\windows\system32\inetsrv\APPCMD add site /name:TimeTracker /id:1 /bindings:http://${env:computername}:8083 /physicalPath:C:\Apps\TimeTracker
