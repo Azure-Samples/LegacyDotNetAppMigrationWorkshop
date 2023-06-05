@@ -72,3 +72,5 @@ typings/
 /Shared/ARM-NewIaaS/dsc/*.zip
 Shared/TF-NewIaaS/Target-Cloud/terraform.tfstate
 Shared/TF-NewIaaS/Target-Cloud/terraform.tfstate.backup
+*.vsidx
+*.lock
