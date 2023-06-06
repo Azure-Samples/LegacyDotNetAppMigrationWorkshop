@@ -11,8 +11,7 @@ In this lab, you will learn how to migrate legacy applications to PaaS. You will
 ## Prerequisites
 
 * Legacy applications and environment from [previous lab](../01-setup/)
-* Azure Subscription
-* Bicep CLI
+* Azure Subscription 
 
 ## Exercises
 
@@ -25,7 +24,7 @@ This hands-on-lab has the following exercises:
 
 ### Exercise 0: Deploy resources<a name="ex0"></a>
 
-For this exercise, you will be migrating the IBuySpy legacy application that is running in the environment you deployed in [HoL 1](../01-setup/). You're going to need an Azure SQL Database hydrated from a backup of your local IBuySpy database. The following template will deploy an Azure SQL Database and then use a BACPAC file to hydrate the tables and data. 
+For this exercise, you will be migrating the IBuySpy legacy application that is running in the environment you deployed in [HoL 1](../01-setup/). We will be demonstrating how to modernize your SQL database as apart of this exercise. You're going to need an Azure SQL Database hydrated from a backup of your local IBuySpy database. The following template will deploy an Azure SQL Database and then use a BACPAC file to hydrate the tables and data for you. 
 
 1. Clone this repository onto your jumpbox in your HoL 1 environment if you haven't already.
 2. Open the PowerShell Deployment script by running the following commands:
