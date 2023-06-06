@@ -24,7 +24,7 @@ Infrastructure requirements
 
 ## Use GitHub Workflow for CI/CD
 
-* Deploy the newly created environment into a new Resource Group
+* Deploy the newly created environment into a new resource group
 * Deploy the new app onto that environment
 
 ## Stretch
