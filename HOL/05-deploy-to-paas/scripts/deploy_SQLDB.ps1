@@ -36,12 +36,7 @@ $parameters = @{
     sqlServerUsername = $sqlServerUsername    
     sqlServerPassword = $sqlServerPassword
 }
-try {    
-    Write-Verbose -Message "=> Creating resource group..." -Verbose    
-    New-AzResourceGroup 
-        -Name $resourceName
-        -Location "eastus"  
-        -Force | Out-Null    
+try {       
     Write-Verbose -Message "=> Starting deployment..." -Verbose    
     New-AzResourceGroupDeployment   
         -Name "Microsoft.Deployment" 
