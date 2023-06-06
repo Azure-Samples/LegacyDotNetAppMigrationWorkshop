@@ -2,7 +2,7 @@
 
 ---
 
-Now that you have the source applications configured, create a cloud DevOps ready workflow with CI/CD.
+Now that you have the source applications configured, create a GitHub workflow with CI/CD.
 
 ## Create a New App
 
@@ -24,8 +24,8 @@ Infrastructure requirements
 
 ## Use GitHub Workflow for CI/CD
 
-* Deploy the newly created environment into a new resource group
-* Deploy the new app onto that environment
+* Create a GitHub workflow to deploy your application
+* Run the workflow to deploy your application 
 
 ## Stretch
 

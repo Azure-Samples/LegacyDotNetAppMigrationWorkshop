@@ -8,7 +8,7 @@ Now that you have the application working in a container, use your GitHub workfl
 
 ## Helpful Info
 
-As part of Challenge 1, a container host was created for you. Use this to complete this challenge.
+As part of Challenge 1, a container host was created for you. Use that to complete this challenge.
 
 ## Stretch
 

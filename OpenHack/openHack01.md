@@ -10,8 +10,8 @@ This document outlines the format for an Open Hack version of the App modernizat
 
 ## Configure Source Applications
 
-* [ ] Get source code [zip files](../../Shared/)
-* [ ] Get [database backups](../../Shared)
+* [ ] Get source code [zip files](../../Shared/SourceApps/Apps)
+* [ ] Get [database backups](../../Shared/SourceApps/Databases)
 * [ ] Configure web applications
 
 ### Applications
@@ -50,14 +50,18 @@ To perform this inventory you can use the following tools:
 Options include
 
 * Full PaaS (Front End and Back End)
+  * Azure App Service
+  * Azure Container Apps
 * Hybrid (Combination of VMs and PaaS)
 * Containers
+  * Virtual Machines or Scalesets
+  * Azure Kubernetes Service
 
-## Identify pre-reqs
+## Identify pre-requisities
 
 This might include but is not limited to:
 
-* Azure vNETs
+* Azure Virtual Networks
 * Resource Groups
 * PaaS Services
 
@@ -69,10 +73,10 @@ This might include but is not limited to:
 
 ## Helpful Resources
 
-* [Migration checklist when moving to Azure App Service](https://azure.microsoft.com/en-us/blog/migration-checklist-when-moving-to-azure-app-service/)
-* [Azure Websites Migration Assistant](https://azure.microsoft.com/en-us/downloads/migration-assistant/)
-* [Microsoft Data Migration Assistant v3.4](https://www.microsoft.com/en-us/download/details.aspx?id=53595)
-* [MAP Toolkit](https://technet.microsoft.com/en-us/library/bb977556.aspx?f=255&MSPPError=-2147217396)
+* [Migration checklist when moving to Azure App Service](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/checklist-for-migrating-web-apps-to-app-service/ba-p/3810991)
+* [Azure App Service Migration Tools](https://azure.microsoft.com/products/app-service/migration-tools/)
+* [Microsoft Data Migration Assistant](https://learn.microsoft.com/sql/dma/dma-overview?view=sql-server-ver16)
+* [MAP Toolkit](https://learn.microsoft.com/training/modules/sql-server-discovery-using-map/)
 * [Azure Migrate](https://azure.microsoft.com/en-us/services/azure-migrate/)
 
 ### 3rd Party Tools
@@ -80,6 +84,3 @@ This might include but is not limited to:
 This listing is not complete or meant to endores any product over another
 
 * [CloudAtlas](https://www.cloudatlasinc.com/)
-* [Movere](https://www.movere.io/)
-
-## Helpful Links
