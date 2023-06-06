@@ -64,9 +64,9 @@ For this exercise, you are going to run a PowerShell script to prepare the appli
 1. In the same directory as the previous exercise, open a PowerShell Terminal in Admin mode
 2. Run ```.\Get-SitePackage.ps1 -ReadinessResultsFilePath ReadinessResults.json -SiteName IBuySpyV3 -PackageResultsFileName "PackageResults.json"```
 3. Prepare the migration settings for the migration script by running ```.\GenerateMigrationSettings.ps1```. It will prompt you to enter the following fields:
-   1. Location = # Where you have your resource group and Azure SQL Database deployed
-   2. Subscription Id = # Your Subscription ID
-   3. Resource Group = # Where you have your Azure SQL Database deployed
+   1. Location = **Where you have your resource group and Azure SQL Database deployed**
+   2. Subscription Id = **Your Subscription ID**
+   3. Resource Group = **Where you have your Azure SQL Database deployed**
 4. After the script has finished, open the *MigrationSettings.json* file. Modify the site name to a unique name such as IBuySpy12345. The name here has to be globally unique for DNS resolution. 
 5. Run ```.\Invoke-SiteMigration.ps1 -MigrationSettingsFilePath "MigrationSettings.json"```
 6. After the script completes, you will see a new App Service Plan and App Service deployed in the Azure Portal.
