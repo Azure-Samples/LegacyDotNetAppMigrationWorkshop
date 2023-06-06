@@ -52,7 +52,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
     osProfile: {
       computerName: '${config.resources.vmName}${year}${number}'
       adminUsername: config.vm.adminUsername
-      adminPassword: ''
+      adminPassword: config.vm.adminPassword
     }
     storageProfile: {
       imageReference: imageRef

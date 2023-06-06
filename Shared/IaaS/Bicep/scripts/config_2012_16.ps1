@@ -15,15 +15,11 @@ function DownloadAndExpand
 #update the execution policy
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 
-#first update the tls level for this session, this is needed because 2008r2 defaults to TLS1.0
+#first update the tls level for this session, this is needed because 2012 defaults to TLS1.0
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-#install chocolatey to do some of the heavy lifting
-iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-choco feature enable -n allowGlobalConfirmation
-
-#upgrade dot net (4.5.2)
-choco install dotnet4.5.2
+#Install IIS and ASP.NET 4.5
+Install-WindowsFeature -name Web-Server -IncludeAllSubFeature
 
 #add the compression assemblies to .net
 
@@ -32,36 +28,32 @@ Add-Type -AssemblyName System.IO.Compression
 
 #create user for the service account
 net user AppsSvcAcct password1234! /ADD
-c:\Windows\Microsoft.NET\Framework\v2.0.50727\aspnet_regiis.exe -ga ${env:computername}\AppsSvcAcct
+c:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe -ga ${env:computername}\AppsSvcAcct
 
 #install databases
 mkdir c:\Databases
-SQLCMD -E -S ${env:computername} -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS"
+SQLCMD -E -S lpc:${env:computername} -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
-SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'"
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Classifieds.bak" -OutFile "c:\Databases\Classifieds.bak"
-SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'"
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
-SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'"
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
 
-SQLCMD -E -S ${env:computername} -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
+SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
-SQLCMD -E -S ${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-
-
-#ensure web server feature is enabled
-Add-WindowsFeature -Name Web-Server -IncludeAllSubFeature
+SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
 #install the "old" web apps from the app migration workshop
 c:\windows\system32\inetsrv\APPCMD delete site "Default Web Site"
-mikdir C:\Apps
+mkdir C:\Apps
 DownloadAndExpand -AppName "TimeTracker"
 c:\windows\system32\inetsrv\APPCMD add apppool /name:"TimeTrackerAppPool" /managedPipelineMode:"Integrated"
 c:\windows\system32\inetsrv\APPCMD add site /name:TimeTracker /id:1 /bindings:http://${env:computername}:8083 /physicalPath:C:\Apps\TimeTracker

@@ -14,7 +14,8 @@
         "dnsLabelPrefix": "",
         "nicName": "myVMNic",
         "vmSize": "Standard_D2s_v5",
-        "adminUsername": "vmadmin"     
+        "adminUsername": "vmadmin",
+        "adminPassword": ""   
     },
     "vnet":{
         "subnetName": "default",
@@ -25,7 +26,7 @@
     "tags": {
         "environment": "app-mig-workshop"
     },
-    "numberVms": 3,
+    "numberVms": 1,
     "runCommand": "[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((Get-Content -LiteralPath \"$Env:SYSTEMDRIVE\\AzureData\\CustomData.bin\"))) | Invoke-Expression",
     "initScript": ""
 }

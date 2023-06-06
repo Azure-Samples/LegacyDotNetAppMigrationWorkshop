@@ -1,9 +1,0 @@
-{
-    "imageReference": {
-        "publisher": "MicrosoftSQLServer",
-        "offer": "SQL2008R2SP3-WS2008R2SP1",
-        "sku": "Express",
-        "version": "latest"
-    },
-    "initScript": "**IGNORE** initScript is loaded from tests\\infra\\src\\scripts\\post-config-win2k8r2-sql.ps1"
-}

@@ -52,7 +52,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
     osProfile: {
       computerName: '${config.resources.vmName}${year}${number}'
       adminUsername: config.vm.adminUsername
-      adminPassword: ''
+      adminPassword: config.vm.adminPassword
     }
     storageProfile: {
       imageReference: imageRef
@@ -75,11 +75,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
 }
 
 resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
-  name: 'vm-EnableSQL${year}${number}'
+  name: 'vm-EnableIIS${year}${number}'
   location: config.location
   parent: vm
   properties: {
     asyncExecution: false
+    runAsUser: config.vm.adminUsername
+    runAsPassword: config.vm.adminPassword
     source: {
       script: config.initScript
     }
@@ -94,6 +96,7 @@ param config object = loadJsonContent('../../configs/main.json')
 param year string
 param imageRef object
 param number string
+
 
 // output
 // output vmCreated object = {
