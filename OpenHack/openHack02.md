@@ -10,7 +10,7 @@ Create a new application of your choosing (.NET, Java, Python, etc.) instead of 
 
 Application Requirements
 
-* Must display the node name on a page
+* Must display the Virtual Machine name on a page
 
 ## Create Infrastructure as Code
 
