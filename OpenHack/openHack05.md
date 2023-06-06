@@ -2,7 +2,7 @@
 
 ---
 
-Now that you have the application working in a container, use your DevOps pipeline to deploy it to Azure.
+Now that you have the application working in a container, use your GitHub workflow to deploy it to Azure.
 
 ## Use the same application you containerized in Challenge 4
 

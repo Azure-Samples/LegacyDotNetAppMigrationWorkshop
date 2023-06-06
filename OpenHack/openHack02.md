@@ -6,7 +6,7 @@ Now that you have the source applications configured, create a cloud DevOps read
 
 ## Create a New App
 
-This is a new application. Not one of the sample applications.
+Create a new application of your choosing (.NET, Java, Python, etc.) instead of using one of the sample applications
 
 Application Requirements
 
