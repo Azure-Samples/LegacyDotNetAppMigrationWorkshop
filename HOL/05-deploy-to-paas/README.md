@@ -138,6 +138,7 @@ Now that we have our application in a GitHub repository, we need to setup DevOps
 6. Click *Configure runtime* to set the application version information. Set *Stack* equal to *.NET* then set *.NET version* to *ASP.NET V4.8*. Click *Save* to update the runtime settings.  
 7. Leave the option to *Add a workflow* selected. This will create a default workflow and publish profile secret in your GitHub repository. 
 8. Hit *Save* at the top to save your changes. 
+   ![Full GitHub Deployment Setup](media/Deployment%20Center%20Setup%20App%20Service.png)
 9. Navigate to your GitHub repository and go into the *Actions* tab. You will see your workflow running to deploy your application. 
 
 
