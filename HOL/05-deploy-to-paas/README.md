@@ -1,4 +1,4 @@
-# Migrate Source Apps to PAAS
+# Migrate Source Apps to PaaS
 
 ## Overview
 
@@ -25,14 +25,24 @@ This hands-on-lab has the following exercises:
 
 ### Exercise 0: Deploy resources<a name="ex0"></a>
 
-For this exercise, you're going to need an Azure SQL Database hydrated from a backup of your local database. The following template will deploy an Azure SQL Database and then use a BACPAC file of the IBuySpy database for the IBuySpy legacy application deployed in [HoL 1](../01-setup/). 
+For this exercise, you will be migrating the IBuySpy legacy application that is running in the environment you deployed in [HoL 1](../01-setup/). You're going to need an Azure SQL Database hydrated from a backup of your local IBuySpy database. The following template will deploy an Azure SQL Database and then use a BACPAC file to hydrate the tables and data. 
 
-1. Clone this repository onto your jumpbox from the previous lab if you haven't already.
-2. Open a new PowerShell Terminal
-3. Authenticate using ```Connect-AzAccount``` to your Azure subscription
-4. Run the [PowerShell Script](scripts/deploy_SQLDB.ps1)
+1. Clone this repository onto your jumpbox in your HoL 1 environment if you haven't already.
+2. Open the PowerShell Deployment script by running the following commands:
+   ```
+      cd scripts
+      code deploy_SQLDB.ps1
+   ```
+3. Update the following values:
+    - *resourceName* on line 11 to the name of the resource group where your environment from HoL 1 lives 
+    - *sqlServerPassword* on line 14 to a secure password of your choosing
+    - Ensure *location* matches the location of your resource group
+   Save the file.
+4. Open a new PowerShell Terminal
+5. Authenticate using ```Connect-AzAccount``` to your Azure subscription
+6. Run the [PowerShell Script](scripts/deploy_SQLDB.ps1)
 
-After the script completes, you will see an Azure SQL Server and database in the resource group you specified in your subscription. This database will be used later in this lab. 
+After the script completes, you will see an Azure SQL Server, SQL database and KeyVault in the resource group you specified in your subscription. This database will be used later in this lab. 
 
 ### Exercise 1: Assess legacy application<a name="ex1"></a>
 
