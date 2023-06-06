@@ -54,10 +54,10 @@ Options include
   * Azure Container Apps
 * Hybrid (Combination of VMs and PaaS)
 * Containers
-  * Virtual Machines or Scalesets
+  * Virtual Machines or scalesets
   * Azure Kubernetes Service
 
-## Identify pre-requisities
+## Identify pre-requisites
 
 This might include but is not limited to:
 

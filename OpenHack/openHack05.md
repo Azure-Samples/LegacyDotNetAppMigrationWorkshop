@@ -17,3 +17,6 @@ As part of Challenge 1, a container host was created for you. Use that to comple
 * Containerize one of the other sample applications and deploy it
 
 ## Helpful Links
+[Creating a GitHub workflow for AKS](https://learn.microsoft.com/azure/aks/kubernetes-action)
+[Nginx Ingress Controller](https://www.nginx.com/partners/microsoft-azure/)
+[Azure Application Gateway](https://learn.microsoft.com/azure/application-gateway/overview)

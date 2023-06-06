@@ -36,3 +36,7 @@ Infrastructure requirements
 * Perform a Performance Test
 
 ## Helpful Links
+[Azure App Service - Application Insights](https://learn.microsoft.com/azure/app-service/overview-monitoring)
+[Azure App Service Automatic Scaling](https://learn.microsoft.com/azure/app-service/manage-automatic-scaling?tabs=azure-portal#enable-automatic-scaling)
+[Performance Testing](https://learn.microsoft.com/azure/well-architected/scalability/performance-test)
+[Blue/Green Deployment](https://learn.microsoft.com/training/modules/implement-blue-green-deployment-feature-toggles/)
