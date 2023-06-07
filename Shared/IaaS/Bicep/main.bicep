@@ -10,25 +10,25 @@ var mergedConfig = union(loadJsonContent('defaults.json'), config)
 
 var config2008 = union(loadJsonContent('configs/main.json'),
   { 
-    initScript: loadTextContent('scripts/config_2008.ps1')
+    initScript: loadTextContent('scripts/config.ps1')
     numberVms: 1
   })
 
 var config2012= union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config_2012_16.ps1')
+  initScript: loadTextContent('scripts/config.ps1')
   numberVms: 1
 })
 
 var config2016= union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config_2012_16.ps1')
+  initScript: loadTextContent('scripts/config.ps1')
   numberVms: 1
 })
 
 var config2019 = union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config_2019.ps1')
+  initScript: loadTextContent('scripts/config.ps1')
   numberVms: 1
 })
 
@@ -98,9 +98,9 @@ module components2016 './modules/components/SQLVM.bicep' = [for number in range(
 }]
 
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2019
-module components2019 './modules/components/SQLVM.bicep' = [for number in range(1,config2019.numberVms): {
+module components2019 './modules/components/SQLVM2019.bicep' = [for number in range(1,config2019.numberVms): {
   name: 'Microsoft.Resources.VM2019${number}'
-  scope: resourceGroup(config2016.resourceGroup)
+  scope: resourceGroup(config2019.resourceGroup)
   params: {
     config: config2019
     imageRef: imagesRefs[3]
