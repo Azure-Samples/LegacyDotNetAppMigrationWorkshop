@@ -53,6 +53,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
       computerName: '${config.resources.vmName}${year}${number}'
       adminUsername: config.vm.adminUsername
       adminPassword: config.vm.adminPassword
+      customData: base64(config.initScript)
     }
     storageProfile: {
       imageReference: imageRef
@@ -83,7 +84,7 @@ resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-0
     runAsUser: config.vm.adminUsername
     runAsPassword: config.vm.adminPassword
     source: {
-      script: config.initScript
+      script: config.runCommand
     }
   }
 }

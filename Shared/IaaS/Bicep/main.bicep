@@ -28,7 +28,7 @@ var config2016= union(loadJsonContent('configs/main.json'),
 
 var config2019 = union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config.ps1')
+  initScript: loadTextContent('scripts/config_2019.ps1')
   numberVms: 1
 })
 
