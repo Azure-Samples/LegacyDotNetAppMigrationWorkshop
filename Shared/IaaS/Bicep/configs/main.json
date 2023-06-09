@@ -27,6 +27,6 @@
         "environment": "app-mig-workshop"
     },
     "numberVms": 1,
-    "runCommand": "[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((Get-Content -LiteralPath '$Env:SYSTEMDRIVE\\AzureData\\CustomData.bin'))) | Invoke-Expression",
+    "runCommand": "[System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String((Get-Content -LiteralPath \"$Env:SYSTEMDRIVE\\AzureData\\CustomData.bin\"))) | Invoke-Expression",
     "initScript": ""
 }
