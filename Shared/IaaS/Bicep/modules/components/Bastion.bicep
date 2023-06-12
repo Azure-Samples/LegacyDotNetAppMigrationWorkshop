@@ -10,7 +10,7 @@ targetScope = 'resourceGroup'
 
 
 resource pip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
-  name: '${config.vm.publicIpName}${year}'
+  name: '${config.vm.publicIpName}bastion'
   location: config.location
   sku: {
     name: config.vm.publicIpSku
@@ -21,7 +21,7 @@ resource pip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
 }
 
 resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
-  name: '${config.vm.nicName}${year}'
+  name: '${config.vm.nicName}bastion'
   location: config.location
   properties: {
     ipConfigurations: [
@@ -41,8 +41,8 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   }
 }
 
-resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
-  name: '${config.resources.vmName}${year}'
+resource bastionvm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
+  name: 'amwbastion'
   location: config.location
   tags: config.tags
   properties: {
@@ -50,9 +50,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
       vmSize: config.vm.vmSize
     }
     osProfile: {
-      computerName: '${config.resources.vmName}${year}'
+      computerName: 'amwbastion'
       adminUsername: config.vm.adminUsername
-      adminPassword: 'n`^vNX,):XJ#4EsQ'
+      adminPassword: config.vm.adminPassword
     }
     storageProfile: {
       imageReference: imageRef
@@ -74,13 +74,23 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
   }
 }
 
+resource vmapps 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
+  name: 'vm-bastionapps'
+  location: config.location
+  parent: bastionvm
+  properties: {
+    asyncExecution: false
+    source: {
+      script: config.initScript
+    }
+  }
+}
 
 // ----------
 // Parameters
 // ----------
 
 param config object = loadJsonContent('../../configs/main.json')
-param year string
 param imageRef object
 
 

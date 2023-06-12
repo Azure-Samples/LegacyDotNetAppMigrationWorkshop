@@ -1,6 +1,9 @@
 {
     "location": "eastus",
     "resourceGroup": "appmigworkshop",
+    "sqlAuthenticationLogin": "sqladmin",
+    "sqlAuthenticationPassword": "password1234!",
+    "sqlvmname": "sqlvm",
     "createStorage": true,
     "blobContainerName": "appmigworkshop",
     "resources": {

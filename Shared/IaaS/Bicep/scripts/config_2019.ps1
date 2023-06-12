@@ -35,24 +35,24 @@ c:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe -ga ${env:comput
 
 #install databases
 mkdir c:\Databases
-SQLCMD -E -S lpc:${env:computername} -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
-SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Classifieds.bak" -OutFile "c:\Databases\Classifieds.bak"
-SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
-SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
 
-SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
-SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
 #install the "old" web apps from the app migration workshop
 c:\windows\system32\inetsrv\APPCMD delete site "Default Web Site"

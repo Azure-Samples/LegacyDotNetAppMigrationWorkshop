@@ -28,7 +28,13 @@ var config2016= union(loadJsonContent('configs/main.json'),
 
 var config2019 = union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config_2019.b64')
+  initScript: loadTextContent('scripts/config_2019.ps1')
+  numberVms: 1
+})
+
+var configBastion= union(loadJsonContent('configs/main.json'),
+{ 
+  initScript: loadTextContent('scripts/bastion.ps1')
   numberVms: 1
 })
 
@@ -106,6 +112,19 @@ module components2019 './modules/components/SQLVM2019.bicep' = [for number in ra
     imageRef: imagesRefs[3]
     year: '2019'
     number: string(number)
+  }
+  dependsOn: [
+    groups
+  ]
+}]
+
+// Bastion VM
+module bastion './modules/components/bastion.bicep' = [for number in range(1,configBastion.numberVms): {
+  name: 'Microsoft.Resources.bastion${number}'
+  scope: resourceGroup(configBastion.resourceGroup)
+  params: {
+    config: configBastion
+    imageRef: imagesRefs[8]
   }
   dependsOn: [
     groups
