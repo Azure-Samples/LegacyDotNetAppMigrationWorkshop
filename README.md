@@ -101,7 +101,9 @@ In this session, we will understand how Windows Containers can help with legacy 
 
 [View PowerPoint - Module06-Windows Containers](Presentation/Module06-Windows-Containers.pptx?raw=true)
 
-### HOL 6 - [Windows Containers](./HOL/06-windows-containers/README.md)
+### HOL 6.0 - [Windows Containers on Azure App Service](./HOL/06-windows-containers/Windows-Containers-on-App-Service.md)
+### HOL 6.1 - [GMSA on Windows Containers](./HOL/06-windows-containers/README.md)
+### HOL 6.2 - [GMSA on AKS](./HOL/06-windows-containers/GMSA-on-AKS.md)
 
 In this lab you will learn how to set up Windows containers
 
