@@ -2,37 +2,41 @@
 
 ---
 
-Now that you have the source applications configured, create a cloud DevOps ready pipleline with CI/CD.
+Now that you have the source applications configured, create a GitHub workflow with CI/CD.
 
 ## Create a New App
 
-This is a new application. Not one of the sample applications.
+Create a new application of your choosing (.NET, Java, Python, etc.) instead of using one of the sample applications
 
 Application Requirements
 
-* Must display the node name on a page
+* Must display the Virtual Machine name on a page
 
-## Create Infra as Code
+## Create Infrastructure as Code
 
-This infrastructure is for the newly created app.
+This infrastructure is for the newly created application.
 
-Infrastucture requirements
+Infrastructure requirements
 
 * Single Region
 * Load balanced - Round Robin
 * Web Application
 
-## Use VSTS to enable CI/CD
+## Use GitHub Workflow for CI/CD
 
-* Deploy the newly created environment into a new Resource Group
-* Deploy the new app onto that env
+* Create a GitHub workflow to deploy your application
+* Run the workflow to deploy your application 
 
 ## Stretch
 
 * Add Geo Distribution
 * Add Application Insights
 * Add Blue/Green style performance
-* Enable AutoScale
-* Preform a Performance Test
+* Enable Automatic Scaling
+* Perform a Performance Test
 
 ## Helpful Links
+[Azure App Service - Application Insights](https://learn.microsoft.com/azure/app-service/overview-monitoring)
+[Azure App Service Automatic Scaling](https://learn.microsoft.com/azure/app-service/manage-automatic-scaling?tabs=azure-portal#enable-automatic-scaling)
+[Performance Testing](https://learn.microsoft.com/azure/well-architected/scalability/performance-test)
+[Blue/Green Deployment](https://learn.microsoft.com/training/modules/implement-blue-green-deployment-feature-toggles/)

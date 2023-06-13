@@ -2,4 +2,4 @@
 
 ---
 
-Now that we have DevOps working on a new app, get it working with the old applications
+Now that we have DevOps working with a newer application, get it working with the sample applications deployed in Open Hack 1. 

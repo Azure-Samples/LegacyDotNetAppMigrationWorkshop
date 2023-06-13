@@ -2,7 +2,7 @@
 
 ---
 
-With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
+With the applications deployed into production, we need to monitor them both at the infrastructure and application level.
 
 ## Requirements
 
@@ -14,3 +14,5 @@ With the applications deployed into production, we need to monitor them both at 
   * Create a custom event that can be tracked
 
 ## Helpful Links
+[Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview?tabs=net)
+[Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/getting-started)
