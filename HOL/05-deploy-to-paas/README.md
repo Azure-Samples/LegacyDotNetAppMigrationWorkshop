@@ -1,316 +1,153 @@
-# Migrate Source Apps to PAAS
+# Migrate Source Apps to PaaS
 
 ## Overview
 
 In this lab, you will learn how to migrate legacy applications to PaaS. You will learn how to:
 
-* Migrate a database to Azure SQL PAAS using Azure SQL Migrate
-* Create VS 2017 empty project
-* Copy files from source apps
-* Add to VSTS
-* Create pipeline and deploy to the PAAS app service
-* Update the connection string in the APP Settings of the app service
+* Migrate a legacy application from an Azure VM to Azure App Service
+* Create a GitHub workflow and deploy the application to the Azure App Service
+* Update the connection string in the App Settings of the App Service
 
 ## Prerequisites
 
-* VS 2017 Installed
-* Source Apps available
-* You have a VSTS Account
-* You have an Azure Subscription
-* You have an Azure SQL DB Deployed
+* Legacy applications and environment from [previous lab](../01-setup/)
+* Azure Subscription 
 
 ## Exercises
 
----
-
 This hands-on-lab has the following exercises:
 
-1. [Exercise 1: Migrate Databases to Azure SQL](#ex1)
-1. [Exercise 2: Create Visual Studio Solution and Import Source Apps](#ex2)
-1. [Exercise 3: Create CI/CD Pipeline in VSTS](#ex3)
-
-### Exercise 1: Migrate Databases to Azure SQL<a name="ex1"></a>
-
----
-
-This lab is done from the jump box. Make sure you have cloned the repository as specified in [HOL 2](./HOL/02-configure-source-apps).
-
-1. RDP into the jump box
-
-1. Launch Internet Explorer
-
-1. If this is the first time opening the browser on this machine, you may see the following:
-
-    ![image](./media/2018-05-18_15-51-13.png)
-
-    ![image](./media/2018-05-18_15-51-55.png)
-
-1. Disable the IE Enhanced Configuration setting by opening server manager
-
-    ![image](./media/2018-05-18_15-53-03.png)
-
-1. Locate the IE Enhanced Security Setting. Click the link
-
-    ![image](./media/2018-05-18_15-53-20.png)
-
-1. Select `Off`
-
-    ![image](./media/2018-05-18_15-53-35.png)
-
-1. Navigate to [https://www.microsoft.com/en-us/download/details.aspx?id=53595](https://www.microsoft.com/en-us/download/details.aspx?id=53595) and download the Database Migration Assistant
-
-1. When prompted, click `Run` to run the installer. Click `Next`
-
-    ![image](./media/2018-03-18_5-08-37.png)
-
-1. Select the `I accept ...` checkbox and click `Next > Install`
-
-    ![image](./media/2018-03-18_5-10-55.png)
-
-1. Select the `Launch Microsoft Data Migration Assistant` and click finish
-
-    ![image](./media/2018-03-18_5-11-59.png)
-
-1. Click on the + Migration and name the Project `JobsDB`. Click `Create`
-
-    ![image](./media/06-01-a.png)
-
-1. Select the Source by entering your SQL server name `appm[YOUR UNIQUE NAME]-sql`. When prompted, select `Server Name > Windows Authentication` and Uncheck `Encrypt connection` and select the `JOBS` database
-
-    ![image](./media/06-01-b.png)
-
-1. Navigate to the Azure Portal and find the name of your Azure SQL server Database. Click to view the properties
-
-    ![image](./media/2018-03-18_5-23-28.png)
-
-1. Find the Server name and copy it to the clipboard
-
-    ![image](./media/2018-03-18_5-39-16.png)
-
-1. Select `Target > Enter Authentication Credentials` and select the `JOBS` database in the Azure subscription and resource group you have deployed the template from HOL 1.
-
-    ![image](./media/2018-03-18_5-31-35.png)
-
-1. Select `SQL Server Authentication` and enter the user name and password
-
-    > Username: appmigadmin
-    >
-    > Password: @pp_M!gr@ti0n-2018
-    >
-
-1. Select `objects`.  Make note of any blocking issues and non-blocking issues that will need to be addressed
-
-1. Click `Generate SQL script`
-
-   ![image](./media/06-01-d.png)
-
-1. To script & deploy the Schema, click `Deploy schema`
-
-   ![image](./media/06-01-e.png)
-
-1. Once the schema has been deployed click `Migrate Data > Start data migration`
-
-   ![image](./media/06-01-f.png)
-
-1. Wait for the migration to complete
-
-   ![image](./media/06-01-g.png)
-
-### Exercise 2: Create a Visual Studio Solution and Import the Source Apps<a name="ex2"></a>
-
----
-
-1. Make sure you have the Jobs Source Apps downloaded on your jump box. In this example they are located in the `C:\AppMigrationWorkshop\Shared\SourceApps\Apps\Jobs` folder
-
-    ![image](./media/06-02-a.png)
-
-1. Open Visual Studio 2017. If this is the first time you are launching Visual Studio, you may be prompted to sign in. Use the same account you used for Visual Studio Online in HOL 1.
-
-    ![image](./media/2018-05-20_2-02-56.png)
-
-1. Select `File > New > Web Site` and choose `ASP.NET Empty Web Site` as the template.
-
-    ![image](./media/2018-05-20_2-06-47.png)
-
-1. Select Browse and create a folder to contain the source applications. Create a folder for the JobsWebSite.
-
-1. Name the project `JobsWebSite`.
-
-    ![image](./media/2018-05-20_2-11-54.png)
-
-1. You should now have an empty web site solution as a target to copy the Jobs source files
-
-1. Open Windows Explorer and navigate to the folder where you have stored the Jobs Source Files
-
-1. Select all, click and drag the files to copy them into the new project
-
-    ![image](./media/2018-05-20_2-18-55.png)
-
-1. If prompted that files exist, select `Apply to all items` and `Yes`
-
-    ![image](./media/2018-03-18_5-55-25.png)
-
-1. Delete the `MyTemplate.vstemplate` and `ProjectName.webproj` files. These files were used with the older version of Visual Studio and are not longer needed.
-
-    ![image](./media/06-02-f.png)
-
-1. You now have a Visual Studio 2017 Web Site project that we can publish to Azure
-
-    ![image](./media/06-02-e.png)
-
----
-
-### Exercise 3: Create CI/CD Pipeline in VSTS<a name="ex3"></a>
-
-1. Login to the cloud shell by navigating to [https://shell.azure.com](https://shell.azure.com)
-
-1. Create a new Azure Web Application in a new resource group
-
-    ````powershell
-    $webapp = "[A UNIQUE NAME]" # this should be a unique name, for example jobswebsite[YOUR INITIALS][A NUMBER]
-    $location = "[A VALID AZURE REGION]" #List Valid regions using  Get-AzureRmLocation | ft Location, DisplayName
-    $rgName = "[YOUR RESOURCE GROUP NAME]"
-    $subscription = "[YOUR SUBSCRIPTION ID]" # List using Get-AzureRMSubscription
-
-    Login-AzureRmAccount
-    Select-AzureRmSubscription -SubscriptionID $subscription
-    #Create the resource group
-    New-AzureRmResourceGroup -Name $rgName -Location $location
-    #Create the app service plan
-    New-AzureRmAppServicePlan -Name $webapp -Location $location -ResourceGroupName $rgName -Tier Free
-    #Create an empty web app to deploy to
-    New-AzureRmWebApp -Name $webapp -Location $location -AppServicePlan $webapp -ResourceGroupName $rgName
-    ````
-
-1. Open a browser and navigate to your VSTS Portal `(https://[YOUR VS  TENANT NAME].visualstudio.com/_projects)`
-
-1. Click `Create New Project`
-
-    ![image](./media/06-03-a.png)
-
-1. Name the project `JobsWebSite`. For the version control type, choose `Git`. For the `Work item process` choose `Agile`
-
-    ![image](./media/06-03-b.png)
-
-    ![image](./media/2018-05-20_2-50-57.png)
-
-1. We now need to push the web site code to remote repo. On your DEV VM open `PowerShell` and navigate to your folder that has the Web Site Project. If prompted to login, use you Visual Studio Online credentials.
-
-    ```powershell
-    cd c:\sourceapps\jobswebsite\
-    git init
-    git remote add origin https://<your tenant>.visualstudio.com/_git/JobsWebSite
-    git add *
-    git commit -m "initial commit"
-    git push --set-upstream origin master
+1. [Exercise 0: Deploy resources](#ex0)
+2. [Exercise 1: Assess legacy application](#ex1)
+3. [Exercise 2: Migrate legacy application](#ex2)
+4. [Exercise 3: Setup GitHub workflow](#ex3)
+
+### Exercise 0: Deploy resources<a name="ex0"></a>
+
+For this exercise, you will be migrating the IBuySpy legacy application that is running in the environment you deployed in [HoL 1](../01-setup/). We will be demonstrating how to modernize your SQL database as apart of this exercise. You're going to need an Azure SQL Database hydrated from a backup of your local IBuySpy database. The following template will deploy an Azure SQL Database and then use a BACPAC file to hydrate the tables and data for you. 
+
+1. Clone this repository onto your jumpbox in your HoL 1 environment if you haven't already.
+2. Open the PowerShell Deployment script by running the following commands:
+   ```
+      cd scripts
+      code deploy_SQLDB.ps1
+   ```
+3. Update the following values:
+    - *resourceName* on line 11 to the name of the resource group where your environment from HoL 1 lives 
+    - *sqlServerPassword* on line 14 to a secure password of your choosing
+    - Ensure *location* matches the location of your resource group
+   Save the file.
+4. Open a new PowerShell Terminal
+5. Authenticate using ```Connect-AzAccount``` to your Azure subscription
+6. Run the [PowerShell Script](scripts/deploy_SQLDB.ps1)
+
+After the script completes, you will see an Azure SQL Server, SQL database and KeyVault in the resource group you specified in your subscription. This database will be used later in this lab. 
+
+### Exercise 1: Assess legacy application<a name="ex1"></a>
+
+For this exercise, you're going to run PowerShell scripts that assess your application for migration to Azure App Service. These scripts are specifically targeted for .NET applications running on Azure VMs. For scenarios where applications are not running 
+
+1. Download the [Assessment and Migration scripts](https://azure.microsoft.com/products/app-service/migration-tools/)
+   ![App Service Migration Download](media/App%20Migration%20Assistant%20.png)
+2. Unzip the scripts into a folder of your choosing
+3. Open a new PowerShell terminal in Admin mode by typing PowerShell into the Windows Search bar, right clicking on PowerShell and selecting *Run as Administrator*
+4. Navigate to the folder where you unzipped the scripts
+5. Run the application assessment script by running `.\Get-SiteReadiness.ps1`
+6. After the script has completed, open the *ReadinessResults.json* file located in the same folder that was generated by the scripts.
+7. You will see assessment results for the several applications. The result you want to pay attention to is the IBuySpyV3 application which is the one you will be migrating. 
+
+### Exercise 2: Migrate the legacy application<a name="ex2"></a>
+
+For this exercise, you are going to run a PowerShell script to prepare the application for migration and another script to migrate it. 
+
+#### Application Migration
+1. In the same directory as the previous exercise, open a PowerShell Terminal in Admin mode
+2. Run ```.\Get-SitePackage.ps1 -ReadinessResultsFilePath ReadinessResults.json -SiteName IBuySpyV3 -PackageResultsFileName "PackageResults.json"```
+3. Prepare the migration settings for the migration script by running ```.\GenerateMigrationSettings.ps1```. It will prompt you to enter the following fields:
+   1. Location = **Where you have your resource group and Azure SQL Database deployed**
+   2. Subscription Id = **Your Subscription ID**
+   3. Resource Group = **Where you have your Azure SQL Database deployed**
+4. After the script has finished, open the *MigrationSettings.json* file. Modify the site name to a unique name such as IBuySpy12345. The name here has to be globally unique for DNS resolution. 
+5. Run ```.\Invoke-SiteMigration.ps1 -MigrationSettingsFilePath "MigrationSettings.json"```
+6. After the script completes, you will see a new App Service Plan and App Service deployed in the Azure Portal.
+
+Now we need to update the database connection to the application. When the application was running on the Virtual Machine, it was connecting a SQL database located on another Virtual Machine. Now that we have migrated our application to App Service and our SQL database to Azure SQL, we can have the application connect to the new Azure SQL database. This requires us to update the App Settings configuration in the App Service. 
+
+#### Database Update
+
+As mentioned in the previous section, you have an Azure SQL database available in your resource group. It has been pre-populated with the appropriate tables and data necessary for the IBuySpy application. For your application to use this new database, you will add the connection string to the Azure SQL database to an Azure KeyVault as a secret and have the Azure App Service read from the KeyVault.
+
+1. Create a System Assigned Managed Identity through App Service by going to Settings then Identity inside your App Service in the Azure Portal. Turn the button for Status to On and hit Save.
+   ![App Service Managed Identity](media/App%20Service%20MI.jpg)
+2. Navigate to your Azure KeyVault in the Portal. Go to Access control (IAM), click Add then Add role assignment. Select the KeyVault Secrets User role. On the next screen, select Managed identity then select your App Service Managed Identity from the dropdown and hit Select. Click Review + assign. Now your App Service has access to read the secrets in your KeyVault.
+3. To create the secret with the database connection string, you will need to assign yourself the role of KeyVault Secrets Officer in the RBAC permissions of the KeyVault.
+
+    Navigate to your Azure KeyVault in the Portal. Go to Access control (IAM), click Add then Add role assignment. Select the KeyVault Secrets Officer role. On the next screen, search for your username. Click Review + assign. Now you have access to manage the secrets in your KeyVault.
+
+4. Grab the connection string from the SQL Database by going to you SQL database in the Portal then to Settings and then Connection Strings. Select the ADO.NET (SQL authentication) option and replace {your_password} with the password you provided in the Bicep deployment. 
+5. Create a secret in the KeyVault with the value as the connection string by go to your KeyVault then Objects and Secrets
+6. Select Generate/Import. Make the secret name something you will remember or save the name somewhere for reference. You will need it in a minute. The secret value should be the connection string from the previous step. Hit Create once you've filled out the secret name and value.
+
+7. Go to the Configuration section in the app service. Add two environment variables:
+
+    - ```DataConnectionString = ConnectionStringPaas```
+    - ```ConnectionStringPaas = @Microsoft.KeyVault(SecretUri=https://{Your KeyVault name}.vault.azure.net/secrets/{Your Secret name}/) OR @Microsoft.KeyVault(VaultName=<Your KeyVault name>;SecretName={Your Secret name})```
+  
+    Hit Save and wait for the app to restart.
+
+Once the app has successfully restarted, navigate to the URL for your application and you should be able to see the fully functional app with products listed on the site. If you do not see your application, check your connection string again in your Azure KeyVault.
+
+### Exercise 3: Setup CI/CD <a name="ex3"></a>
+
+Once you've migrated your application via zip file deployment as you did in [Exercise 2](#exercise-2-migrate-the-legacy-application), you can move your source code to a GitHub repository and setup continuous deployment with a GitHub workflow. In this exercise, we're going to copy the IBuySpyV3 source code to a new GitHub repository and enable CI/CD through Azure App Service. 
+
+#### Setup Continuous Integration
+1. If not already connected, connect to the jump box using Bastion via [RDP](https://learn.microsoft.com/azure/bastion/bastion-connect-vm-rdp-windows) or [SSH](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-windows). See [HOL 1](../01-setup/) if you haven't deployed the infrastructure already. 
+2. Login into your GitHub account. Create a new repository for your application.
+3. Open a Git Bash terminal. 
+4.  Clone the repository you just created to your jumpbox in a folder you . 
+    ```bash
+    mkdir source/repos
+    cd source/repos
+    git clone <Your GitHub repo URL>
     ```
+5. Copy the code for your IBuySpyV3 application in the ```C:\inetpub\IBuySpyV3``` folder to your cloned GitHub repository.
+6. Open a PowerShell terminal. 
+7. Create a file called `.gitignore` in the root of the directory by running the following command:
+   ```powershell
+   cd source/repos
+   dotnet new gitignore
+   ```
 
-1. Browse to the VSTS Portal and click `Code` in the navigation, you should see the files in the repo
+8. The code below will add all the files to track and commit them to your GitHub repo. From the root directory of the project:
 
-    ![image](./media/06-03-c.png)
+      ```bash
+      git add -A
+      git commit -am "feat: Add application files"
+      git push -u origin --all
+      ```
+#### Continuous Deployment
+Now that we have our application in a GitHub repository, we need to setup DevOps integration with Azure App Service.
 
-1. Now that we have our source files in VSTS, we can create a Build Definition. Click on `Build and Release` > `New definition`
+1. Navigate to the App Service that the migration script created in [Exercise 2](#exercise-2-migrate-the-legacy-application).
+2. Click on the *Deployment Center*
+   ![App Service Deployment Center](media/App%20Service%20Deployment%20Center.png)
+3. In the *Source* dropdown menu, select *GitHub* under *Continuous Deployment (CI/CD)*
+4. Click *Authorize* and login to your GitHub account. 
+5. Once logged in, select the *Organization* and *Repository* where your application code is located. For the *Branch*, select main.
+6. Click *Configure runtime* to set the application version information. Set *Stack* equal to *.NET* then set *.NET version* to *ASP.NET V4.8*. Click *Save* to update the runtime settings.  
+7. Leave the option to *Add a workflow* selected. This will create a default workflow and publish profile secret in your GitHub repository. 
+8. Hit *Save* at the top to save your changes. 
+   ![Full GitHub Deployment Setup](media/Deployment%20Center%20Setup%20App%20Service.png)
+9. Navigate to your GitHub repository and go into the *Actions* tab. You will see your workflow running to deploy your application. 
 
-    ![image](./media/06-03-d.png)
-
-1. Select the VSTS Git Repo you just created and click `Continue`
-
-    ![image](./media/2018-05-20_3-03-26.png)
-
-1. Click `Empty Process`
-
-    ![image](./media/06-03-e.png)
-
-1. In the Tasks menu click the `+` symbol. Enter `archive` in the search > select the `Archive Files` task
-
-    ![image](./media/06-03-f.png)
-
-1. In the Tasks click the `+` symbol > enter `publish artifact` > select the `Publish Build Artifacts` task
-
-    ![image](./media/06-03-h.png)
-
-1. Select the `Publish Artifact` task
-
-1. In the `Path to publish`, enter `$(Build.ArtifactStagingDirectory)`
-
-1. Enter `drop` in the and Artifact name
-
-1. Select `Visual Studio Team Service/TFS` for the Artifact publish location
-
-    ![image](./media/06-03-i.png)
-
-1. Click on `Triggers` and enable continuous integration
-
-    ![image](./media/06-03-j.png)
-
-1. Click `Save and Queue` and you should see a new Build
-
-    ![image](./media/06-03-k.png)
-
-1. Click on the Build # and you can verify in the Log that the Archive of the job site did indeed happen
-
-    ![image](./media/2018-05-20_3-17-43.png)
-
-1. Now that we have our source files, we can create a Release Definition to deploy our site
-
-1. In the VSTS Portal now click `Releases > + New definition`
-
-    ![image](./media/06-04-a.png)
-
-1. Choose `Azure App Service` Deployment
-
-    ![image](./media/06-04-b.png)
-
-1. Select the phase and task for the environment you just created
-
-    ![image](./media/2018-05-20_3-26-12.png)
-
-1. We need to provide Visual Studio Online access to manage resources in your Azure subscription. This is done by authorizing to the subscription or creating a new `Service Endpoint`.
-
-    ![image](./media/2018-05-20_3-35-53.png)
-
-    ![image](./media/2018-05-20_3-29-06.png)
-
-1. Select your subscription from the list. If it is not listed, follow the directions to `use the full version...` to register the Azure endpoint
-
-    ![image](./media/2018-05-20_3-32-39.png)
-
-1. Once you subscription is authorized, set the App type to `Web App` > Choose the 'jobswebsite[YOUR CUSTOM NAME]' > Validate that the Package or folder is set to `$(System.DefaultWorkingDirectory/**/*.zip)` and click 'Save'
-
-    ![image](./media/06-04-c.png)
-
-1. On the Release Pipeline click on `+ Add` next Artifacts
-
-    ![image](./media/06-04-d.png)
-
-1. Select the Build definition from the previous steps
-
-    ![image](./media/06-04-e.png)
-
-1. Click `Save` to save the configuration. Then click `Release >  Create Release`
-
-    ![image](./media/06-04-f.png)
-
-1. You should now see the release 'IN PROGRESS'
-
-    ![image](./media/06-04-g.png)
-
-1. Click on Log to verify the release was successful
-
-    ![image](./media/06-04-h.png)
-
----
 
 ## Summary
 
 In this hands-on lab, you learned how to:
-
-* Migrate a database to Azure SQL PAAS using Azure SQL Migrate
-* Create VS 2017 empty project
-* Copy files from source apps
-* Add to VSTS
-* Create pipeline and deploy to the PAAS app service
-* Update the connection string in the APP Settings of the app service
+* Migrate a legacy application from an Azure VM to Azure App Service
+* Create a GitHub workflow and deploy the application to the Azure App Service
+* Update the connection string in the App Settings of the App Service
 
 ---
-Copyright 2016 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
+Copyright 2022 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
