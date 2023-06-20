@@ -23,6 +23,8 @@ This hands-on-lab has the following exercises:
   - [Prerequisites](#prerequisites)
   - [Exercises](#exercises)
     - [Exercise 1: Containerize your application ](#exercise-1-containerize-your-application-)
+    - [Exercise 2: Deploy your application on App Service](#exercise-2-deploy-your-application-on-app-service)
+      - [Database Update](#database-update)
 
 ### Exercise 1: Containerize your application <a name="ex1"></a>
 1. Grab the name, admin username and password for your Azure Container Registry from the Azure Portal
@@ -77,24 +79,4 @@ As mentioned in the previous lab (HoL 5), you have an Azure SQL database availab
     Hit Save and wait for the app to restart.
 
 Once the app has successfully restarted, navigate to the URL for your application and you should be able to see the fully functional app with products listed on the site. If you do not see your application, check your connection string again in your Azure KeyVault.
-
-### Exercise 3: Setup CI/CD
-In HoLs 4 & 5, you learned how to setup CI/CD for App Service with source code. Now that we have our application containerized, let's enable CI/CD for containers. 
-
-1. If not already connected, connect to the jump box using Bastion via [RDP](https://learn.microsoft.com/azure/bastion/bastion-connect-vm-rdp-windows) or [SSH](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-windows). See [HOL 1](../01-setup/) if you haven't deployed the infrastructure already. 
-2. Login into your GitHub account. Create a new repository and clone it to your jumpbox. 
-    ```bash
-    git clone <Your GitHub repo URL>
-    ```
-3. Copy the files for the IBuySpy application to your repo folder
-4. Run the following commands to commit and push your application to the repo:
-   ```
-   ```
-5. We need to enable Basic Authentication on the App Service to support CI/CD. 
-   1. Navigate to the Configuration tab on the left navigation panel. 
-   2. Click the *General Settings* tab 
-   3. Turn *Basic Authentication*  to On
-   4. Hit *Save*
-   ![Basic Auth Setup](media/Basic%20Authentication%20Setup.png)
-6. Navigate to the *Deployment Center* tab. 
    
