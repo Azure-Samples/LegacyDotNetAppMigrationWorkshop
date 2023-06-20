@@ -1,0 +1,22 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "ibuyspyv3"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "ibuyspyv3"
+  template:
+    metadata:
+      labels:
+        app: "ibuyspyv3"
+    spec:
+      nodeSelector:
+        "kubernetes.azure.com/os-sku": Windows2022
+      containers:
+        - name: "ibuyspyv3"
+          image: <Your Image Name> # Image tag reference
+          ports:
+          - containerPort: 80
+          imagePullPolicy: Always
