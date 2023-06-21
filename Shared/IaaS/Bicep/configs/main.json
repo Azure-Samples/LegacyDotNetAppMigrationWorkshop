@@ -2,8 +2,10 @@
     "location": "eastus",
     "resourceGroup": "appmigworkshop",
     "sqlAuthenticationLogin": "sqladmin",
-    "sqlAuthenticationPassword": "password1234!",
+    "sqlAuthenticationPassword": "enter a password here",
     "sqlvmname": "sqlvm",
+    "ErrorBlobUri": "https://appmigtest.blob.core.windows.net/logs/errormessages.txt",
+    "OutputBlobUri": "https://appmigtest.blob.core.windows.net/logs/outputmessages.txt",
     "createStorage": true,
     "blobContainerName": "appmigworkshop",
     "resources": {
@@ -16,9 +18,9 @@
         "publicIPAllocationMethod": "Dynamic",
         "dnsLabelPrefix": "",
         "nicName": "myVMNic",
-        "vmSize": "Standard_D2s_v5",
+        "vmSize": "Standard_D8s_v5",
         "adminUsername": "vmadmin",
-        "adminPassword": ""   
+        "adminPassword": "enter a password here"   
     },
     "vnet":{
         "subnetName": "default",

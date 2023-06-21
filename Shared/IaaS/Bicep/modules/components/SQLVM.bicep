@@ -74,14 +74,30 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
   }
 }
 
+resource sqlUpdateCreds 'Microsoft.SqlVirtualMachine/SqlVirtualMachines@2022-07-01-preview' = {
+  name: '${config.resources.vmName}${year}${number}'
+  location: config.location
+  properties: {
+    virtualMachineResourceId: resourceId('Microsoft.Compute/virtualMachines', vm.name )
+    serverConfigurationsManagementSettings: {
+      sqlConnectivityUpdateSettings: {
+        sqlAuthUpdateUserName: config.sqlAuthenticationLogin
+        sqlAuthUpdatePassword: config.sqlAuthenticationPassword
+      }
+    }
+  }
+}
+
 resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
   name: 'vm-EnableIIS${year}${number}'
   location: config.location
   parent: vm
   properties: {
+    errorBlobUri: config.ErrorBlobUri
+    outputBlobUri: config.OutputBlobUri
     asyncExecution: false
     runAsUser: config.vm.adminUsername
-    runAsPassword: config.vm.adminPassword
+    runAsPassword:config.vm.adminPassword
     source: {
       script: config.initScript
     }
