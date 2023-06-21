@@ -131,33 +131,21 @@ The idea of this exercise is to show you how to monitor a deployment, that is in
 
 1. Go to the Azure Portal (http://portal.azure.com)
 
-1. In the portal, in the left navigation pane, click `Resource Groups`
+2. In the portal, in the left navigation pane, click `Resource Groups`
 
     ![image](./media/02-01-c.png)
 
-1. From the Resource Group list, select the one deployed in HOL 1 (e.g. AppModernization-RG)
+3. From the Resource Group list, select the one deployed in HOL 1 (e.g. AppModernization-RG)
 
     ![image](./media/02-01-d.png)
 
-1. From the Resource Group blade, there is a left menu item list, click on `Deployments`
+4. From the Resource Group blade, there is a left menu item list, click on `Deployments`
 
     ![image](./media/pic4.png)
 
-1. This will list all deployments executed and being executed, there is a column with the status of the deployment.
+5. This will list all deployments executed and being executed, there is a column with the status of the deployment.
 
     ![image](./media/pic5.png)
-
-1. Your master deployment item is called `azuredeploy-<MMDD>-<HHMM>`, this is the main item to monitor, if you want more details about it (all other deployments being shown here are created by the main deployment). Click `azuredeploy-<MMDD>-<HHMM>`.
-
-    ![image](./media/pic6.png)
-
-1. This will show all deployments chained to the master deployment. If there is any issue or if you want to check more details you can click on `Operation Details` or `Related Events` link.
-
-    ![image](./media/pic10.png)
-
-1. You will notice that your deployment is completed after status of `azuredeploy-<MMDD>-<HHMM>` deployment is Succeeded and it jumps to the top of the deployment list.
-
-    ![image](./media/pic11.png)
 
 
 
