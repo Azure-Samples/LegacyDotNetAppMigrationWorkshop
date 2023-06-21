@@ -4,20 +4,28 @@
 
 In this lab, you will deploy a pre-built environment that you will use for the labs. The automated template will create 3 environments. Here is what is deployed:
 
-Source environment
+## Applications
+* Time tracker.  A classic webapp that runs on IIS in IIS7 mode.  Uses SQL Backend.
+* Jobs. A classic webapp that runs on IIS in IIS7 mode. Uses SQL Backend.
+* Classifieds.  A classic webapp that runs on IIS in IIS7 mode.  Uses SQL Backend
+* IBuySpy.  A modernized webapp utilizing .Net4.8 and a SQL backend.
 
-* 1 Windows Server 2016 VM with Visual Studio 2017 that will act as the jump box to manage the environment
-* 1 Windows Server 2016 VM that will act as the domain controller for the environment
-* 1 Windows Server 2008 machine that will act as the web server for the source applications
-* 1 Windows Server 2008 machine with SQL 2008 installed and configured
+## Source environment
+* Azure Resource group / Azure Vnet/Subnets / Azure Storage Account configured to emulate a customer "on-prem" environment
+* 1 Windows Server 2022 VM with Active Directory installed and configured (under development - coming in next version)
+* 1 Windows Server 2019 VM with SQL 2022 and IIS installed and configured with the above apps utilizing local accounts
+* 1 Windows Server 2016 VM with SQL 2017 and IIS installed and configured with the above apps utilizing local accounts
+* 1 Windows Server 2012 VM with SQL 2014 and IIS installed and configured with the above apps utilizing local accounts
+* 1 Windows Server 2008R2 VM with SQL 2008 and IIS installed and configured with the above apps utilizing local accounts
 
-Target environment
+## Target environment
 
-* 1 Azure App Service plan with 3 web applications
-* 3 Azure SQL databases
-* 1 Windows Server 2016 that will act as the Docker container host
-* 1 Azure application gateway
-* 1 Azure traffic manager
+* Azure Kubernetes service with Hybrid Networking and windows containers
+* Azure Container Registry
+* Azure Keyvault
+* 4 Azure SQL databases
+* 1 Windows Server 2022 VM that will act as a domain controller
+* Point-to-Point VPN connectivity (simulated using Vnet Pairing for this exercise)
 
 ## Prerequisites
 
