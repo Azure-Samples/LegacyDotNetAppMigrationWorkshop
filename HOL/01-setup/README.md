@@ -2,13 +2,13 @@
 
 ## Overview
 
-In this lab, you will deploy a pre-built environment that you will use for the labs. The automated template will create 3 environments. Here is what is deployed:
+In this lab, you will deploy a pre-built environment that you will use for the labs. The automated template will create 4 environments. Here is what is deployed:
 
 ## Applications
-* Time tracker.  A classic webapp that runs on IIS in IIS7 mode.  Uses SQL Backend.
-* Jobs. A classic webapp that runs on IIS in IIS7 mode. Uses SQL Backend.
-* Classifieds.  A classic webapp that runs on IIS in IIS7 mode.  Uses SQL Backend
-* IBuySpy.  A modernized webapp utilizing .Net4.8 and a SQL backend.
+* Time tracker.  a .NET framework 3.5 web application with a SQL backend running on IIS7
+* Jobs. a .NET framework 3.5 web application with a SQL backend running on IIS7
+* Classifieds.  a .NET framework 3.5 web application with a SQL backend running on IIS7
+* IBuySpy. A modernized webapp utilizing .Net4.8 and a SQL backend.
 
 ## Source environment
 * Azure Resource group / Azure Vnet/Subnets / Azure Storage Account configured to emulate a customer "on-prem" environment
