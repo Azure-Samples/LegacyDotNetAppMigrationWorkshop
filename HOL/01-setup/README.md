@@ -95,61 +95,23 @@ This hands-on-lab has the following exercises:
 
 ----
 
-In the automated deployment, we are using PowerShell Desired State Configuration (DSC) modules to help configure the virtual machines. You need to download them to the environment, so they can be deployed. The deployment script uses these modules to build the zip file that is used by the PowerShell DSC VM Extension and uploads it to the staging storage account.
+In the automated deployment, we are using Azure Bicep to configure the virtual machines. 
 
 1. If not already open, open your browser and navigate to <a href="https://shell.azure.com" target="_new">https://shell.azure.com</a>. Proceed with Authentication if needed.
 
 1. Change the current folder to the location of cloned files
 
     ```powershell
-    cd C:\Users\ContainerAdministrator\CloudDrive\AppMigrationWorkshop\Shared\ARM-NewIaaS\dsc
+    cd C:\Users\ContainerAdministrator\CloudDrive\AppMigrationWorkshop\Shared\IaaS\Bicep
     ```
 
-1. Copy the following folders to the Cloud Shell PowerShell modules folder
+2. Set the environment variable for the region you wish to deploy to, and run the deployment to build thesource environment.
 
     ```powershell
-    copy-item cDisk -Destination C:\users\ContainerAdministrator\CloudDrive\.pscloudshell\WindowsPowerShell\Modules -Recurse -Force
-    copy-item xActiveDirectory -Destination C:\users\ContainerAdministrator\CloudDrive\.pscloudshell\WindowsPowerShell\Modules -Recurse -Force
-    copy-item xComputerManagement -Destination C:\users\ContainerAdministrator\CloudDrive\.pscloudshell\WindowsPowerShell\Modules -Recurse -Force
-    copy-item xDisk -Destination C:\users\ContainerAdministrator\CloudDrive\.pscloudshell\WindowsPowerShell\Modules -Recurse -Force
-    copy-item xNetworking -Destination C:\users\ContainerAdministrator\CloudDrive\.pscloudshell\WindowsPowerShell\Modules -Recurse -Force
+    Set-Variable -Name 'Location' -Value 'EastUS'
+    az deployment sub create --location $Location --template-file main.bicep
     ```
-
-1. Change directories to the location of the ARM deployment script
-
-    ````powershell
-    cd ..
-    ````
-
-1. This solution was created using Visual Studio 2017 and it provides automatically a deployment script, please execute it by replacing some of the values as follows:
-
-    ````powershell
-    .\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation <DEPLOYMENT_LOCATION> `
-                                        -ResourceGroupName <RESOURCE_GROUP_NAME> `
-                                        -UploadArtifacts `
-                                        -TemplateFile .\azuredeploy.json `
-                                        -TemplateParametersFile .\azuredeploy.parameters.json
-
-    ````
-
-    Where:
-
-    ````xml
-    <DEPLOYMENT_LOCATION> - Azure Location the template will for the location property of all resources
-    <RESOURCE_GROUP_NAME> - Name of the resource group where all resources will be created
-    ````
-
-    Example:
-
-    ````powershell
-    .\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation westus `
-                                    -ResourceGroupName AppModernization-RG `
-                                    -UploadArtifacts `
-                                    -TemplateFile .\azuredeploy.json `
-                                    -TemplateParametersFile `
-                                    .\azuredeploy.parameters.json
-    ````
-
+    
 ### Exercise 4: Monitoring your deployment<a name="ex4"></a>
 
 ----
