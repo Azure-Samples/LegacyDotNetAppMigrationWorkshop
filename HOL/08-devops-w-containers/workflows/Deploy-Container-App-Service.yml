@@ -1,0 +1,50 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App
+
+# This tells the workflow to run on every push to the main branch and when manually triggered.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# This workflow has two jobs: build and deploy. 
+# The build job builds the container image and pushes it to Azure Container Registry.
+# The deploy job deploys the container image to Azure Web App.
+jobs:
+  build:
+    runs-on: 'windows-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+        
+    - uses: azure/docker-login@v1
+      with:
+        login-server: https://${{ secrets.ACR_Name }}.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername }}
+        password: ${{ secrets.AzureAppService_ContainerPassword }}
+
+    # This step runs Docker build and push to ACR. Buildx cannot be used because it is not supported for Windows containers.
+    - run: |
+        docker build -t ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }} -f app/web/Dockerfile .
+        docker push ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    # Uses Publish Profile to deploy container image to Azure Web App on production slot.
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ secrets.AzureAppService_Name }}
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+        images: '${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }}'

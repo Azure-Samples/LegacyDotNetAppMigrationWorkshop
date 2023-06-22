@@ -102,7 +102,14 @@ For this HoL, we are going to use the template for [Deploying a Web App with cus
       ```
 7. Submit a Pull Request to main from your branch through GitHub. Once the Pull Request has been created, hit Merge, type a meaningful commit message and merge your branch. 
 8.  [Register an app in the Azure portal for your application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application)
-9.  Give you application [Federated credentials](https://learn.microsoft.com/azure/active-directory/workload-identities/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#github-actions). Federated credentials allow certain services such as GitHub to have permission to deploy Azure resources without having to specify a client secret. It sends a claim to Azure which then returns a token. 
+9. Give your application Contributor access to your subscription by going to your Subscription:
+    1.  Click on *Access control (IAM)*
+    2.  Click on *Add* then *Add role assignment*
+    3.  Click on *Privileged administrator roles* then *Contributor*, hit *Next*
+    4.  Click *Select members* and search for the name of your application.
+    5.  Select the application and hit Next
+    6.  Click *Review + assign* to create the role assignment
+10. Give you application [Federated credentials](https://learn.microsoft.com/azure/active-directory/workload-identities/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#github-actions). Federated credentials allow certain services such as GitHub to have permission to deploy Azure resources without having to specify a client secret. It sends a claim to Azure which then returns a token. 
 
     Use the following values for the credential:
     
@@ -112,17 +119,17 @@ For this HoL, we are going to use the template for [Deploying a Web App with cus
       - Github branch name = main
       - Name = GitHubDeployMain
     
-10.  Create the following secrets in your repository with the corresponding values from the application you just created:
+11.  Create the following secrets in your repository with the corresponding values from the application you just created:
          
          - AZURE_CLIENT_ID = #Application Client Id
          - AZURE_TENANT_ID = #Application Tenant Id
          - AZURE_SUBSCRIPTION_ID = #Your Azure Subscription Id
-11.  Create the following variables in your repository:
+12.  Create the following variables in your repository:
          
          - AZURE_RG = #Choose a name for the resource group
          - LOCATION = #Choose a location for your resources
-12.  Navigate to the *Actions* tab and locate your workflow on the left sidebar (Build and deploy Azure App Service Environment).
-13.  Click the drop dropdown that says *Run workflow* and click *Run workflow*
+13.  Navigate to the *Actions* tab and locate your workflow on the left sidebar (Build and deploy Azure App Service Environment).
+14.  Click the drop dropdown that says *Run workflow* and click *Run workflow*
    ![GitHub workflow](media/GitHub%20Workflow%20Not%20run.png)
 
 Once your workflow completes successfully, you will see the following resources created in your resource group:

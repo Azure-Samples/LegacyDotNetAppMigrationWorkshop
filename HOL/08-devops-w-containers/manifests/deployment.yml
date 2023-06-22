@@ -1,0 +1,38 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: ibuyspyv3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ibuyspyv3
+  template:
+    metadata:
+      labels:
+        app: ibuyspyv3
+    spec:
+      nodeSelector:
+        "kubernetes.azure.com/os-sku": Windows2022
+      containers:
+        - name: ibuyspyv3
+          image: <ACR Name>.azurecr.io/ibuyspyv3
+          ports:
+          - containerPort: 80
+          imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ibuyspyv3
+  namespace: windowsapp
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: ibuyspyv3
+  ports:
+  - protocol: TCP
+    port: 80
