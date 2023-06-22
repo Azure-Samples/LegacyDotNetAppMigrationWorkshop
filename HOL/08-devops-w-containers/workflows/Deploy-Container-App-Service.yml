@@ -3,12 +3,16 @@
 
 name: Build and deploy container app to Azure Web App
 
+# This tells the workflow to run on every push to the main branch and when manually triggered.
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
+# This workflow has two jobs: build and deploy. 
+# The build job builds the container image and pushes it to Azure Container Registry.
+# The deploy job deploys the container image to Azure Web App.
 jobs:
   build:
     runs-on: 'windows-latest'
@@ -22,6 +26,7 @@ jobs:
         username: ${{ secrets.AzureAppService_ContainerUsername }}
         password: ${{ secrets.AzureAppService_ContainerPassword }}
 
+    # This step runs Docker build and push to ACR. Buildx cannot be used because it is not supported for Windows containers.
     - run: |
         docker build -t ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }} -f app/web/Dockerfile .
         docker push ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }}
@@ -34,6 +39,7 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+    # Uses Publish Profile to deploy container image to Azure Web App on production slot.
     - name: Deploy to Azure Web App
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2

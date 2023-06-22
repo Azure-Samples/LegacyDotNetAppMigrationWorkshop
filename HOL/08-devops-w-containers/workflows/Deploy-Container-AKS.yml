@@ -1,16 +1,21 @@
 name: Build and deploy container app to Azure Kubernetes Service
 
+# This tells the workflow to run on every push to the main branch and when manually triggered.
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
+# This tells the workflow what permissions the OIDC token used to login to Azure should have.
 permissions:
    id-token: write
    contents: read
    actions: read
 
+# This workflow has two jobs: build and deploy. 
+# The build job builds the container image and pushes it to Azure Container Registry. 
+# The deploy job deploys the container image to Azure Kubernetes Service.
 jobs:
   build:
     runs-on: 'windows-latest'
@@ -24,6 +29,7 @@ jobs:
         username: ${{ secrets.ACR_ContainerUsername }}
         password: ${{ secrets.ACR_ContainerPassword }}
 
+    # This step runs docker build and push to the ACR. Buildx cannot be used because it is not supported for Windows containers.
     - run: |
         docker build -t ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }} -f app/web/Dockerfile .
         docker push ${{ secrets.ACR_Name }}.azurecr.io/ibuyspyv3:${{ github.sha }}
