@@ -147,7 +147,7 @@ Now that we have our application in a GitHub repository, we need to setup DevOps
 In this hands-on lab, you learned how to:
 * Migrate a legacy application from an Azure VM to Azure App Service
 * Create a GitHub workflow and deploy the application to the Azure App Service
-* Update the connection string in the App Settings of the App Service
+* Update App Settings of an application through App Service
 
 ---
-Copyright 2022 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
