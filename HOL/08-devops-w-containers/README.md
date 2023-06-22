@@ -6,9 +6,9 @@ In this lab, you will create GitHub workflows to support deploying Windows conta
 
 ## Prerequisites
 
-* You have created the environment described in HOL 1 Setup
-* You have run through the configuration for the Container Host VM as described in HOL 7
-* You have a Dockerfile image like the one created in HOL 7
+* You have created the environment described in [HOL 1 Setup](../01-setup/README.md)
+* You have run through the configuration for the Container Host VM as described in [HOL 7](../07-app-to-container/README.md)
+* You have a Dockerfile image like the one created in [HOL 7](../07-app-to-container/README.md)
 
 ## Labs
 - [App Service](./App-Service.md)
