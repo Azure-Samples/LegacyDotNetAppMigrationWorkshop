@@ -24,6 +24,7 @@ This hands-on-lab has the following exercises:
   - [Prerequisites](#prerequisites)
   - [Exercises](#exercises)
     - [Exercise 1: Setup CI/CD](#exercise-1-setup-cicd)
+  - [Summary](#summary)
 
 ### Exercise 1: Setup CI/CD
 In HoLs 4 & 5, you learned how to setup CI/CD for App Service with source code. Now that we have our application containerized from HoL 7, let's enable CI/CD for Windows containers. 
@@ -64,4 +65,12 @@ In HoLs 4 & 5, you learned how to setup CI/CD for App Service with source code. 
     git push -u origin --all
    ```
    The workflow has a trigger for pushes to main. You can navigate to the *Actions* tab to check the status of the build and deployment. Once the container has been deployed to App Service, it can take a few minutes for it come up. 
-   
+
+## Summary
+
+In this hands-on lab, you learned how to:
+
+* Use CI/CD to deploy Windows Containers to App Service
+
+----
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

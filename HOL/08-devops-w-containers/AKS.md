@@ -26,6 +26,7 @@ This hands-on-lab has the following exercises:
     - [Exercise 0: Setup Environment](#exercise-0-setup-environment)
     - [Exercise 1: Setup environment for CI/CD](#exercise-1-setup-environment-for-cicd)
     - [Exercise 2: Setup CI/CD](#exercise-2-setup-cicd)
+  - [Summary](#summary)
 
 
 ### Exercise 0: Setup Environment<a name="ex0"></a>
@@ -98,4 +99,12 @@ In HoLs 6 & 7, you learned how to deploy an application using GMSA onto AKS and 
    kubectl get services -n windowsapp
    ```
    Copy the External-IP address and paste it into your browser to see your application. 
-   
+
+## Summary
+
+In this hands-on lab, you learned how to:
+
+* Use CI/CD to deploy Windows Containers to AKS
+
+----
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

@@ -44,7 +44,7 @@ In this session, we will provide a brief overview of the workshop and provide an
 
 In this lab you will create the environment that is needed for the workshop.
 
-* Run a custom ARM Template to scaffold the resources used during the training
+* Run a custom Bicep file to scaffold the resources used during the training
 
 ----
 
@@ -79,7 +79,7 @@ In this lab you will review the legacy application, align the requirements to th
 
 ## Module 4 - Continuous Integration, Continuous Deployment and DevOps Pipelines
 
-In this session, we will understand how Ci and CD can be used to help with the application migration factory.
+In this session, we will understand how CI and CD can be used to help with the application migration factory.
 
 [View PowerPoint](Presentation/Module04-Devops.pptx?raw=true)
 
@@ -89,7 +89,7 @@ In this lab you will setup CI and CD with a simple application
 
 ### HOL 5 - [Migrate Source Apps to PaaS](./HOL/05-deploy-to-paas/README.md)
 
-In this lab you will use CI/CD with the sample legacy applications
+In this lab you will use CI/CD with a sample legacy application
 
 ----
 
@@ -102,7 +102,7 @@ In this session, we will understand how Windows Containers can help with legacy 
 [View PowerPoint - Module06-Windows Containers](Presentation/Module06-Windows-Containers.pptx?raw=true)
 
 ### HOL 6.0 - [Windows Containers on Azure App Service](./HOL/06-windows-containers/Windows-Containers-on-App-Service.md)
-### HOL 6.1 - [GMSA on Windows Containers](./HOL/06-windows-containers/README.md)
+### HOL 6.1 - [GMSA on Windows Containers](./HOL/06-windows-containers/GMSA-Local-Container.md)
 ### HOL 6.2 - [GMSA on AKS](./HOL/06-windows-containers/GMSA-on-AKS.md)
 
 In this lab you will learn how to set up Windows containers
@@ -127,11 +127,11 @@ In this lab you will learn how to containerize legacy applications
 
 ## Module 8 - DevOps with Windows Containers
 
-In this session, we will learn how to create a CI/CD pipeline with Windows Containers.
+In this session, we will learn how to create a CI/CD pipeline with Windows Containers on Azure Kubernetes Service and Azure App Service.
 
 ### HOL 8 - [DevOps with Containers](,/HOL/08-devops-w-containers/README.md)
 
-In this lab you will learn how to use CI/CD pipelines with Windows Containers
+In this lab you will learn how to use CI/CD pipelines with Windows Containers on Azure Kubernetes Service and Azure App Service
 
 ----
 
