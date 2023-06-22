@@ -25,12 +25,12 @@ Both can be used in combination if desired.
 ## Open Hack challenges
 
 1. [Open Hack 1: Setting up the Azure environment](OpenHack/openHack01.md). In this challenge you will create the environment that is needed for the workshop.
-1. [Open Hack 2: Create a Cloud DevOps Ready pipeline](OpenHack/openHack02.md). Now that you have the source applications configured, create a cloud DevOps ready pipeline with CI/CD.
-1. [Open Hack 3: Enable legacy applications with CI/CD](OpenHack/openHack03.md). Now that we have DevOps working on a new app, get it working with the legacy applications
-1. [Open Hack 4: Windows Containers and authentication](OpenHack/openHack04.md). Some legacy applications require native Windows functionality.
-1. [Open Hack 5: CI/CD with Windows Containers](OpenHack/openHack05.md). Now that you have the application working in a container, use your DevOps pipeline to deploy it to Azure.
-1. [Open Hack 6: Monitoring](OpenHack/openHack06.md).With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
-1. [Open Hack 7: Going live](OpenHack/openHack07.md). Now that you have the application in the cloud and it has been tested in the cloud. Make the original version of the application accessible and then cut over to the migrated version.
+2. [Open Hack 2: Create a DevOps pipeline](OpenHack/openHack02.md). Now that you have the source applications configured, create a cloud DevOps ready pipeline with CI/CD.
+3. [Open Hack 3: Enable legacy applications with CI/CD](OpenHack/openHack03.md). Now that we have DevOps working on a new app, get it working with the legacy applications
+4. [Open Hack 4: Windows Containers and authentication](OpenHack/openHack04.md). Some legacy applications require native Windows functionality.
+5. [Open Hack 5: CI/CD with Windows Containers](OpenHack/openHack05.md). Now that you have the application working in a container, use a DevOps pipeline to deploy it to Azure.
+6. [Open Hack 6: Monitoring](OpenHack/openHack06.md).With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
+7. [Open Hack 7: Going live](OpenHack/openHack07.md). Now that you have the application in the cloud and it has been tested in the cloud. Make the original version of the application accessible and then cut over to the migrated version.
 
 ----
 
