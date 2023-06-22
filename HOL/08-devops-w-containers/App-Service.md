@@ -33,7 +33,7 @@ In HoLs 4 & 5, you learned how to setup CI/CD for App Service with source code. 
    2. Click the *General Settings* tab 
    3. Turn *Basic Authentication*  to On
    4. Hit *Save*
-   ![Basic Auth Setup](media/Basic%20Authentication%20Setup.png)
+   ![Basic Auth Setup](../../HOL/04-devops-w-app-service/media/Basic%20Authentication.png)
 
 2. If not already connected, connect to the jump box using Bastion via [RDP](https://learn.microsoft.com/azure/bastion/bastion-connect-vm-rdp-windows) or [SSH](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-windows). See [HOL 1](../01-setup/) if you haven't deployed the infrastructure already. 
 3. Login into your GitHub account. Create a new repository and clone it to your jumpbox. 
