@@ -25,6 +25,7 @@ This hands-on-lab has the following exercises:
     - [Exercise 1: Containerize your application ](#exercise-1-containerize-your-application-)
     - [Exercise 2: Deploy your application on App Service](#exercise-2-deploy-your-application-on-app-service)
       - [Database Update](#database-update)
+  - [Summary](#summary)
 
 ### Exercise 1: Containerize your application <a name="ex1"></a>
 1. Grab the name, admin username and password for your Azure Container Registry from the Azure Portal
@@ -79,4 +80,14 @@ As mentioned in the previous lab (HoL 5), you have an Azure SQL database availab
     Hit Save and wait for the app to restart.
 
 Once the app has successfully restarted, navigate to the URL for your application and you should be able to see the fully functional app with products listed on the site. If you do not see your application, check your connection string again in your Azure KeyVault.
-   
+
+## Summary
+
+In this hands-on lab, you learned how to:
+
+* Setup and deploy a Windows container on Azure App Service
+
+
+----
+
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

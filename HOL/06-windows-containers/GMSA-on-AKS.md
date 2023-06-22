@@ -31,6 +31,7 @@ This hands-on-lab has the following exercises:
     - [Exercise 3: Deploy your application on AKS](#exercise-3-deploy-your-application-on-aks)
       - [Verify your workload deployed](#verify-your-workload-deployed)
       - [Debugging](#debugging)
+  - [Summary](#summary)
 
 ### Exercise 1: Configure GMSA with the AKS PowerShell module<a name="ex1"></a>
 The set of resources you deployed in HoL 1 included an Azure Kubernetes cluster that is setup for Windows Container deployments. Since our application uses Group Managed Service Accounts (GMSA), we need to properly configure our cluster for GMSA usage. 
@@ -101,3 +102,14 @@ If your application isn't loading, there could be an issue with the GMSA integra
 1. Check the status of your pods by running  `kubectl get pods -n simpleapp` on your jumpbox. 
    - If the status is Running, you're good to go. 
    - If the status of your pods is CrashLoopBackOff, run `kubectl logs <pod name>` to debug. This status likely means that your credential spec file is misconfigured or the cluster permissions to your KeyVault are misconfigured. An example credential spec can be found [here](https://learn.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/manage-serviceaccounts#create-a-credential-spec). When you look through your credential spec file, ensure that the DnsName, NetBiosName and GroupManagedServiceAccounts match the values from your domain controller.
+
+## Summary
+
+In this hands-on lab, you learned how to:
+
+* Configure and test a Windows Container gSMA Account on AKS
+
+
+----
+
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

@@ -81,6 +81,6 @@ This might include but is not limited to:
 
 ### 3rd Party Tools
 
-This listing is not complete or meant to endores any product over another
+This listing is not complete or meant to endorse any product over another
 
 * [CloudAtlas](https://www.cloudatlasinc.com/)

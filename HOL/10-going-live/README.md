@@ -12,13 +12,23 @@ Ensure you have completed the previous labs where the following is already confi
 
 1. Setup the monitoring solution for Azure DNS as well
 
-## Excercies
+## Exercises
 
-1. [Exercise 1: DNS](#ex1)
-1. [Exercise 2: Containers](#ex2)
-1. [Exercise 3: Application Gateway](#ex3)
-1. [Exercise 4: Traffic manager](#ex4)
-1. [Exercise 5: Decomission the old environment(optional)](#ex5)
+- [Going Live](#going-live)
+  - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+  - [Exercises](#exercises)
+    - [Exercise 1: DNS](#exercise-1-dns)
+    - [Exercise 2: Containers](#exercise-2-containers)
+      - [Assumptions](#assumptions)
+    - [Exercise 3: Application Gateway](#exercise-3-application-gateway)
+      - [Assumptions](#assumptions-1)
+    - [Exercise 4: Traffic manager](#exercise-4-traffic-manager)
+      - [Assumptions](#assumptions-2)
+    - [Exercise 5: Verify the whole setup](#exercise-5-verify-the-whole-setup)
+      - [Assumptions](#assumptions-3)
+    - [Exercise 6: Deploy a reference architecture](#exercise-6-deploy-a-reference-architecture)
+  - [Summary](#summary)
 
 ### Exercise 1: DNS<a name="ex1"></a>
 
@@ -90,14 +100,22 @@ Let's verify the changes
 1. Test the website
 1. Monitor the new resources through the dashboard
 
+### Exercise 6: Deploy a reference architecture
+
+During these labs, you've explored deploying Windows Containers onto three services: Virtual Machines, App Service and AKS. You can also deploy to Azure Container Apps, but we did not cover that in these labs. Each of these platforms has a production ready reference implementation that includes a suggested infrastructure setup and guidance for configuring your application. Try deploying one of the reference architectures below with your legacy application. 
+
+[AKS Windows Baseline](https://github.com/Azure/aks-baseline-windows)
+[Azure App Service Landing Zone Accelerator](https://github.com/Azure/appservice-landing-zone-accelerator)
+[Azure Container Apps Landing Zone Accelerator](https://github.com/Azure/aca-landing-zone-accelerator)
+
 ## Summary
 
 In this hands-on lab, you learned how to:
 
 * Configure internal DNS
 * Configure Azure DNS
-* Cutover live traffic using Azure services
+* Cut over live traffic using Azure services
 
 ---
 
-Copyright 2016 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.
+Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

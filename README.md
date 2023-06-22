@@ -25,12 +25,12 @@ Both can be used in combination if desired.
 ## Open Hack challenges
 
 1. [Open Hack 1: Setting up the Azure environment](OpenHack/openHack01.md). In this challenge you will create the environment that is needed for the workshop.
-1. [Open Hack 2: Create a Cloud DevOps Ready pipeline](OpenHack/openHack02.md). Now that you have the source applications configured, create a cloud DevOps ready pipeline with CI/CD.
-1. [Open Hack 3: Enable legacy applications with CI/CD](OpenHack/openHack03.md). Now that we have DevOps working on a new app, get it working with the legacy applications
-1. [Open Hack 4: Windows Containers and authentication](OpenHack/openHack04.md). Some legacy applications require native Windows functionality.
-1. [Open Hack 5: CI/CD with Windows Containers](OpenHack/openHack05.md). Now that you have the application working in a container, use your DevOps pipeline to deploy it to Azure.
-1. [Open Hack 6: Monitoring](OpenHack/openHack06.md).With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
-1. [Open Hack 7: Going live](OpenHack/openHack07.md). Now that you have the application in the cloud and it has been tested in the cloud. Make the original version of the application accessible and then cut over to the migrated version.
+2. [Open Hack 2: Create a DevOps pipeline](OpenHack/openHack02.md). Now that you have the source applications configured, create a cloud DevOps ready pipeline with CI/CD.
+3. [Open Hack 3: Enable legacy applications with CI/CD](OpenHack/openHack03.md). Now that we have DevOps working on a new app, get it working with the legacy applications
+4. [Open Hack 4: Windows Containers and authentication](OpenHack/openHack04.md). Some legacy applications require native Windows functionality.
+5. [Open Hack 5: CI/CD with Windows Containers](OpenHack/openHack05.md). Now that you have the application working in a container, use a DevOps pipeline to deploy it to Azure.
+6. [Open Hack 6: Monitoring](OpenHack/openHack06.md).With the applications deployed into production, we need to monitor them both at the infrastructure and application levels.
+7. [Open Hack 7: Going live](OpenHack/openHack07.md). Now that you have the application in the cloud and it has been tested in the cloud. Make the original version of the application accessible and then cut over to the migrated version.
 
 ----
 
@@ -44,7 +44,7 @@ In this session, we will provide a brief overview of the workshop and provide an
 
 In this lab you will create the environment that is needed for the workshop.
 
-* Run a custom ARM Template to scaffold the resources used during the training
+* Run a custom Bicep file to scaffold the resources used during the training
 
 ----
 
@@ -79,7 +79,7 @@ In this lab you will review the legacy application, align the requirements to th
 
 ## Module 4 - Continuous Integration, Continuous Deployment and DevOps Pipelines
 
-In this session, we will understand how Ci and CD can be used to help with the application migration factory.
+In this session, we will understand how CI and CD can be used to help with the application migration factory.
 
 [View PowerPoint](Presentation/Module04-Devops.pptx?raw=true)
 
@@ -89,7 +89,7 @@ In this lab you will setup CI and CD with a simple application
 
 ### HOL 5 - [Migrate Source Apps to PaaS](./HOL/05-deploy-to-paas/README.md)
 
-In this lab you will use CI/CD with the sample legacy applications
+In this lab you will use CI/CD with a sample legacy application
 
 ----
 
@@ -102,7 +102,7 @@ In this session, we will understand how Windows Containers can help with legacy 
 [View PowerPoint - Module06-Windows Containers](Presentation/Module06-Windows-Containers.pptx?raw=true)
 
 ### HOL 6.0 - [Windows Containers on Azure App Service](./HOL/06-windows-containers/Windows-Containers-on-App-Service.md)
-### HOL 6.1 - [GMSA on Windows Containers](./HOL/06-windows-containers/README.md)
+### HOL 6.1 - [GMSA on Windows Containers](./HOL/06-windows-containers/GMSA-Local-Container.md)
 ### HOL 6.2 - [GMSA on AKS](./HOL/06-windows-containers/GMSA-on-AKS.md)
 
 In this lab you will learn how to set up Windows containers
@@ -127,11 +127,11 @@ In this lab you will learn how to containerize legacy applications
 
 ## Module 8 - DevOps with Windows Containers
 
-In this session, we will learn how to create a CI/CD pipeline with Windows Containers.
+In this session, we will learn how to create a CI/CD pipeline with Windows Containers on Azure Kubernetes Service and Azure App Service.
 
 ### HOL 8 - [DevOps with Containers](,/HOL/08-devops-w-containers/README.md)
 
-In this lab you will learn how to use CI/CD pipelines with Windows Containers
+In this lab you will learn how to use CI/CD pipelines with Windows Containers on Azure Kubernetes Service and Azure App Service
 
 ----
 
