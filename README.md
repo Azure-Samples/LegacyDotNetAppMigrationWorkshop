@@ -54,7 +54,7 @@ In this session, we will understand how to inventory applications, assess depend
 
 [View PowerPoint](Presentation/Module01-Inventory.pptx?raw=true)
 
-### HOL 2 - [Configure legacy Applications](./HOL/02-investigate-source-apps/README.md)
+### HOL 2 - [Investigate legacy Applications](./HOL/02-investigate-source-apps/README.md)
 
 In this lab you will inventory the sample applications.
 
