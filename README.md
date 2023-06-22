@@ -54,7 +54,7 @@ In this session, we will understand how to inventory applications, assess depend
 
 [View PowerPoint](Presentation/Module01-Inventory.pptx?raw=true)
 
-### HOL 2 - [Configure legacy Applications](./HOL/02-configure-source-apps/README.md)
+### HOL 2 - [Investigate legacy Applications](./HOL/02-investigate-source-apps/README.md)
 
 In this lab you will inventory the sample applications.
 
@@ -129,7 +129,7 @@ In this lab you will learn how to containerize legacy applications
 
 In this session, we will learn how to create a CI/CD pipeline with Windows Containers on Azure Kubernetes Service and Azure App Service.
 
-### HOL 8 - [DevOps with Containers](,/HOL/08-devops-w-containers/README.md)
+### HOL 8 - [DevOps with Containers](./HOL/08-devops-w-containers/README.md)
 
 In this lab you will learn how to use CI/CD pipelines with Windows Containers on Azure Kubernetes Service and Azure App Service
 
