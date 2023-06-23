@@ -1,3 +1,12 @@
+# Disable IE Enhanced Security Configuration
+
+$AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
+New-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -PropertyType DWord
+
+$UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1AA-37EF-4b3f-8CFC-4F3A74704073}"
+New-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -PropertyType DWord
+
+
 function DownloadAndExpand
 {
     param
@@ -35,9 +44,6 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 #Install IIS and ASP.NET 4.5
 Install-WindowsFeature -name Web-Server -IncludeAllSubFeature
 
-#install the .net 4.5 framework
-Add-WindowsFeature Web-Asp-Net45
-
 #add the compression assemblies to .net
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -49,36 +55,33 @@ c:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe -ga ${env:comput
 
 #install databases
 mkdir c:\Databases
-
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Classifieds.bak" -OutFile "c:\Databases\Classifieds.bak"
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
 
 Invoke-WebRequest "https://raw.githubusercontent.com/rellismicrosoft/appmigrationtemp/master/IBuySpyv3.bak" -OutFile "c:\Databases\IBuySpyv3.bak"
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "RESTORE DATABASE [IBuySpyv3] FROM DISK='C:\Databases\IBuySpyv3.bak' WITH MOVE 'IBuySpyv3_Data' TO 'C:\Databases\IBuySpyv3_Data.mdf', MOVE 'IBuySpyv3_Log' TO 'C:\Databases\IBuySpyv3_Log.ldf'" >> C:\Databases\db.log
+SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [IBuySpyv3] FROM DISK='C:\Databases\IBuySpyv3.bak' WITH MOVE 'IBuySpyv3_Data' TO 'C:\Databases\IBuySpyv3_Data.mdf', MOVE 'IBuySpyv3_Log' TO 'C:\Databases\IBuySpyv3_Log.ldf'" >> C:\Databases\db.log
 
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!"-Q "USE IBuySpyv3; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S ${env:computername} -Q "USE IBuySpyv3; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
-SQLCMD -S lpc:${env:computername} -U sqladmin -P "password1234!" -Q "USE IBuySpyv3; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S lpc:${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
+SQLCMD -E -S ${env:computername} -Q "USE IBuySpyv3; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
 
 #install the "old" web apps from the app migration workshop
 c:\windows\system32\inetsrv\APPCMD delete site "Default Web Site"
-
 mkdir C:\Apps
-
 DownloadAndExpand -AppName "TimeTracker"
 c:\windows\system32\inetsrv\APPCMD add apppool /name:"TimeTrackerAppPool" /managedPipelineMode:"Integrated"
 c:\windows\system32\inetsrv\APPCMD add site /name:TimeTracker /id:1 /bindings:http://${env:computername}:8083 /physicalPath:C:\Apps\TimeTracker

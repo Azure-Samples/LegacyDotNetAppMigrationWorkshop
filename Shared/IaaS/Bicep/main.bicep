@@ -10,31 +10,31 @@ var mergedConfig = union(loadJsonContent('defaults.json'), config)
 
 var config2008 = union(loadJsonContent('configs/main.json'),
   { 
-    initScript: loadTextContent('scripts/config_2008.ps1')
+    initScript: loadTextContent('scripts/2008/config.ps1')
     numberVms: 1
   })
 
 var config2012= union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config.ps1')
+  initScript: loadTextContent('scripts/2012/config.ps1')
   numberVms: 1
 })
 
 var config2016= union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config.ps1')
+  initScript: loadTextContent('scripts/2016/config.ps1')
   numberVms: 1
 })
 
 var config2019 = union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/config_2019.ps1')
+  initScript: loadTextContent('scripts/2019/config.ps1')
   numberVms: 1
 })
 
 var configBastion= union(loadJsonContent('configs/main.json'),
 { 
-  initScript: loadTextContent('scripts/bastion.ps1')
+  initScript: loadTextContent('scripts/bastion/bastion.ps1')
   numberVms: 1
 })
 
@@ -59,7 +59,7 @@ module groups './modules/groups/resources.bicep' = {
 }
 
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2008
-module components2008R2 './modules/components/2008VM.bicep' = [for number in range(1,config2008.numberVms): {
+module components2008R2 './modules/components/2008/VirtualMachine.bicep' = [for number in range(1,config2008.numberVms): {
   name: 'Microsoft.Resources.VM2008${number}'
   scope: resourceGroup(config2008.resourceGroup)
   params: {
@@ -74,7 +74,7 @@ module components2008R2 './modules/components/2008VM.bicep' = [for number in ran
 }]
 
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2012
-module components2012 './modules/components/SQLVM.bicep' = [for number in range(1,config2012.numberVms): {
+module components2012 './modules/components/2012/VirtualMachine.bicep' = [for number in range(1,config2012.numberVms): {
   name: 'Microsoft.Resources.VM2012${number}'
   scope: resourceGroup(config2012.resourceGroup)
   params: {
@@ -89,7 +89,7 @@ module components2012 './modules/components/SQLVM.bicep' = [for number in range(
 }]
 
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2016
-module components2016 './modules/components/SQLVM.bicep' = [for number in range(1,config2016.numberVms): {
+module components2016 './modules/components/2016/VirtualMachine.bicep' = [for number in range(1,config2016.numberVms): {
   name: 'Microsoft.Resources.VM2016${number}'
   scope: resourceGroup(config2016.resourceGroup)
   params: {
@@ -104,7 +104,7 @@ module components2016 './modules/components/SQLVM.bicep' = [for number in range(
 }]
 
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2019
-module components2019 './modules/components/SQLVM2019.bicep' = [for number in range(1,config2019.numberVms): {
+module components2019 './modules/components/2019/VirtualMachine.bicep' = [for number in range(1,config2019.numberVms): {
   name: 'Microsoft.Resources.VM2019${number}'
   scope: resourceGroup(config2019.resourceGroup)
   params: {
@@ -119,7 +119,7 @@ module components2019 './modules/components/SQLVM2019.bicep' = [for number in ra
 }]
 
 // Bastion VM
-module bastion './modules/components/bastion.bicep' = [for number in range(1,configBastion.numberVms): {
+module bastion './modules/components/bastion/bastion.bicep' = [for number in range(1,configBastion.numberVms): {
   name: 'Microsoft.Resources.bastion${number}'
   scope: resourceGroup(configBastion.resourceGroup)
   params: {

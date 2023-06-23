@@ -46,7 +46,7 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
           destinationPortRange: '3389'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: config.ipAddressforRDP
           destinationAddressPrefix: '*'
         }
       }

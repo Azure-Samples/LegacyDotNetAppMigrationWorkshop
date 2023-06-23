@@ -10,7 +10,7 @@ targetScope = 'resourceGroup'
 
 
 resource pip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
-  name: '${config.vm.publicIpName}bastion'
+  name: '${config.vm.publicIpName}${year}${number}'
   location: config.location
   sku: {
     name: config.vm.publicIpSku
@@ -21,7 +21,7 @@ resource pip 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
 }
 
 resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
-  name: '${config.vm.nicName}bastion'
+  name: '${config.vm.nicName}${year}${number}'
   location: config.location
   properties: {
     ipConfigurations: [
@@ -41,8 +41,8 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
   }
 }
 
-resource bastionvm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
-  name: 'amwbastion'
+resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
+  name: '${config.resources.vmName}${year}${number}'
   location: config.location
   tags: config.tags
   properties: {
@@ -50,7 +50,7 @@ resource bastionvm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
       vmSize: config.vm.vmSize
     }
     osProfile: {
-      computerName: 'amwbastion'
+      computerName: '${config.resources.vmName}${year}${number}'
       adminUsername: config.vm.adminUsername
       adminPassword: config.vm.adminPassword
     }
@@ -74,14 +74,28 @@ resource bastionvm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
   }
 }
 
-resource vmapps 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
-  name: 'vm-bastionapps'
+resource sqlUpdateCreds 'Microsoft.SqlVirtualMachine/SqlVirtualMachines@2022-07-01-preview' = {
+  name: '${config.resources.vmName}${year}${number}'
   location: config.location
-  parent: bastionvm
+  properties: {
+    virtualMachineResourceId: resourceId('Microsoft.Compute/virtualMachines', vm.name )
+    serverConfigurationsManagementSettings: {
+      sqlConnectivityUpdateSettings: {
+        sqlAuthUpdateUserName: config.sqlAuthenticationLogin
+        sqlAuthUpdatePassword: config.sqlAuthenticationPassword
+      }
+    }
+  }
+}
+
+resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
+  name: 'vm-EnableIIS${year}${number}'
+  location: config.location
+  parent: vm
   properties: {
     asyncExecution: false
     source: {
-      script: config.initScript
+      script: config.initscript
     }
   }
 }
@@ -90,7 +104,15 @@ resource vmapps 'Microsoft.Compute/virtualMachines/runCommands@2022-03-01' = {
 // Parameters
 // ----------
 
-param config object = loadJsonContent('../../configs/main.json')
+param config object = loadJsonContent('../../../configs/main.json')
+param year string
 param imageRef object
+param number string
 
+
+// output
+// output vmCreated object = {
+//   name: vm.name
+//   runCommandId: vmFEIISEnabled.id
+// }
 

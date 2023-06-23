@@ -93,11 +93,11 @@ resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-0
   location: config.location
   parent: vm
   properties: {
-    errorBlobUri: config.ErrorBlobUri
-    outputBlobUri: config.OutputBlobUri
     asyncExecution: false
+    runAsUser: config.vm.adminUsername
+    runAsPassword:config.vm.adminPassword
     source: {
-      script: config.initscript
+      script: config.initScript
     }
   }
 }
@@ -106,7 +106,7 @@ resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-0
 // Parameters
 // ----------
 
-param config object = loadJsonContent('../../configs/main.json')
+param config object = loadJsonContent('../../../configs/main.json')
 param year string
 param imageRef object
 param number string
