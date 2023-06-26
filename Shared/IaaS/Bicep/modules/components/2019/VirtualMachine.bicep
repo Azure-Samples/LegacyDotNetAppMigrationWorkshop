@@ -94,6 +94,12 @@ resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-0
   parent: vm
   properties: {
     asyncExecution: false
+    protectedParameters: [
+      {
+       name: 'sqlAdminPassword'
+       value: config.sqlAuthenticationPassword
+    }
+    ]
     source: {
       script: config.initscript
     }
