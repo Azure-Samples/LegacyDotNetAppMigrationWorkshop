@@ -2,12 +2,9 @@
     "location": "eastus",
     "resourceGroup": "appmigworkshop",
     "sqlvmname": "sqlvm",
-    "ErrorBlobUri": "https://appmigtest.blob.core.windows.net/logs/errormessages.txt",
-    "OutputBlobUri": "https://appmigtest.blob.core.windows.net/logs/outputmessages.txt",
-    "createStorage": true,
-    "blobContainerName": "appmigworkshop",
     "sqlAuthenticationLogin": "sqladmin",
-    "sqlAuthenticationPassword": "enter password here",
+    "sqlAuthenticationPassword": "<Choose SQL Password>",
+    "ipAddressforRDP": "<Insert your IP Address>",
     "resources": {
         "virtualNetworkName": "app-mig-workshop-vnet",
         "vmName": "app-vm-"
@@ -20,16 +17,16 @@
         "nicName": "myVMNic",
         "vmSize": "Standard_D8s_v5",
         "adminUsername": "vmadmin",
-        "adminPassword": "enter password here",
+        "adminPassword": "<Choose VM Password>",
         "appusername": "AppsSvcAcct",
-        "apppassword": "enter password here"
+        "apppassword": "<Choose App Password>"
 
     },
     "vnet":{
         "subnetName": "default",
         "addressPrefix": "10.0.0.0/16",
         "subnetPrefix":"10.0.0.0/24",
-        "networkSecurityGroupName": "default-NSG"
+        "networkSecurityGroupName": "app-mig-workshop-nsg"
     },
     "tags": {
         "environment": "app-mig-workshop"
