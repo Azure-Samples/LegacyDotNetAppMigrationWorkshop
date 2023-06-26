@@ -55,13 +55,15 @@ For the deployment, we are using Azure Bicep to deploy the resources and setup t
    3. sqlAuthenticationPassword - Password for the SQL database on the Virtual Machine
    4. ipAddressforRDP - Set this to your IP address for RDP access to the jump boxes
    
-4. Open a Bash or PowerShell terminal on your local machine then change directories to the folder with the Bicep code.
+4. Change directories to the folder with the Bicep code.
    ```
    cd Shared/IaaS/Bicep
     ```
-5. Set the environment variable for the region you wish to deploy to, and run the deployment to build the source environment.
+5. Login to Azure, set the environment variable for the region you wish to deploy to and run the deployment to build the source environment.
 
     ```powershell
+    az login 
+    az account set --subscription <Your Subscription Id>
     Set-Variable -Name 'Location' -Value 'EastUS'
     az deployment sub create --location $Location --template-file main.bicep
     ```
