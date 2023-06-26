@@ -11,7 +11,7 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 * IBuySpy. A modernized webapp utilizing .Net4.8 and a SQL backend.
 
 ## Source environment
-* Azure Resource group / Azure Vnet/Subnets / Azure Storage Account configured to emulate a customer "on-prem" environment
+* Azure Resource group / Azure VNet/Subnets / Azure Storage Account configured to emulate a customer "on-prem" environment
 * 1 Windows Server 2022 VM with Active Directory installed and configured (under development - coming in next version)
 * 1 Windows Server 2019 VM with SQL 2022 and IIS installed and configured with the above apps utilizing local accounts
 * 1 Windows Server 2016 VM with SQL 2017 and IIS installed and configured with the above apps utilizing local accounts
@@ -22,10 +22,10 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 
 * Azure Kubernetes service with Hybrid Networking and windows containers
 * Azure Container Registry
-* Azure Keyvault
+* Azure KeyVault
 * 4 Azure SQL databases
 * 1 Windows Server 2022 VM that will act as a domain controller
-* Point-to-Point VPN connectivity (simulated using Vnet Pairing for this exercise)
+* Point-to-Point VPN connectivity (simulated using VNet Pairing for this exercise)
 
 ## Prerequisites
 
@@ -36,76 +36,30 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 
 This hands-on-lab has the following exercises:
 
-1. [Exercise 1: Opening Cloud Shell for the first time](#ex1)
-1. [Exercise 2: Downloading the materials to the Cloud Shell environment](#ex2)
-1. [Exercise 3: Deployment of Azure resources](#ex3)
-1. [Exercise 4: Monitoring your deployment](#ex4)
-1. [Exercise 5: Set up your Visual Studio online account](#ex5)
+1. [Exercise 1: Deployment of Azure resources](#exercise-1-deployment-of-azure-resources)
+2. [Exercise 2: Monitoring your deployment](#ex4)
 
-### Exercise 1: Opening Cloud Shell for the first time<a name="ex1"></a>
+### Exercise 1: Deployment of Azure resources
 
-----
+For the deployment, we are using Azure Bicep to deploy the resources and setup the legacy applications for the labs. 
 
-1. Open your browser and go to <a href="https://shell.azure.com" target="_new">https://shell.azure.com</a>
-
-1. Sign on with `Microsoft Account` or `Work or School Account` associated with your Azure subscription
-
-    ![image](./media/02-01-a.png)
-
-    ![image](./media/02-01-b.png)
-
-1. If you have access to more than one subscription, Select the Azure directory that is associated with your Azure subscription
-
-1. If this is the first time you accessed the Cloud Shell, `Select` "PowerShell (Windows)" when asked which shell to use.
-
-    ![image](./media/pic1.jpg)
-
-    > Note: If this is not the first time and it is the "Bash" shell that starts, please click in the dropdown box that shows "Bash" and select "PowerShell" instead.
-
-1. If you have at least contributor rights at subscription level, please select which subscription you would like the initialization process to create a storage account and click "Create storage" button.
-
-    ![image](./media/pic2.jpg)
-
-1. You should see a command prompt like this one:
-
-    ![image](./media/pic3.jpg)
-
-### Exercise 2: Downloading artifacts to the Cloud Shell environment<a name="ex2"></a>
-
-----
-
-1. If not already open, open your browser and navigate to <a href="https://shell.azure.com" target="_new">https://shell.azure.com</a>. Proceed with authentication if needed.
-
-1. The Azure Cloud Shell persists its data on a mapped folder to Azure Files service. Change directories to `C:\Users\ContainerAdministrator\CloudDrive` with
-
-    ```powershell
-    cd C:\Users\ContainerAdministrator\CloudDrive
-    ```
-    > If you need to delete the directory and start over run the following:
-    ```powershell
-    Remove-Item .\AppMigrationWorkshop\ -Recurse -Force
-    ```
-1. Clone the repository from its source
+1. Open a Bash or PowerShell terminal and clone the repository from its source
 
     ```powershell
     git clone https://github.com/Azure-Samples/LegacyDotNetAppMigrationWorkshop.git
     ```
+2. Navigate to the repo folder. 
+3. Before deploying, you will need to update the following values in the [main.json](../../Shared/IaaS/Bicep/configs/main.json):
+   1. apppassword - Password for the application account on the Virtual Machine
+   2. adminPassword - Password for the Virtual Machine 
+   3. sqlAuthenticationPassword - Password for the SQL database on the Virtual Machine
+   4. ipAddressforRDP - Set this to your IP address for RDP access to the jump boxes
+   
+4. Open a Bash or PowerShell terminal on your local machine then change directories to the folder with the Bicep code.
+   ```
+   cd Shared/IaaS/Bicep
 
-### Exercise 3: Deployment of Azure resources<a name="ex3"></a>
-
-----
-
-In the automated deployment, we are using Azure Bicep to configure the virtual machines. 
-
-1. If not already open, open your browser and navigate to <a href="https://shell.azure.com" target="_new">https://shell.azure.com</a>. Proceed with Authentication if needed.
-
-1. Change the current folder to the location of cloned files
-
-    ```powershell
-    cd C:\Users\ContainerAdministrator\CloudDrive\AppMigrationWorkshop\Shared\IaaS\Bicep
-    ```
-
-2. Set the environment variable for the region you wish to deploy to, and run the deployment to build thesource environment.
+5. Set the environment variable for the region you wish to deploy to, and run the deployment to build the source environment.
 
     ```powershell
     Set-Variable -Name 'Location' -Value 'EastUS'
