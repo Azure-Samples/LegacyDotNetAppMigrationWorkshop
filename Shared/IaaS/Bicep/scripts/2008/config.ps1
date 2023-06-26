@@ -1,10 +1,15 @@
+
 # Disable IE Enhanced Security Configuration
+function Disable-InternetExplorerESC {
+    $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
+    $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
+    Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0
+    Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0
+    Stop-Process -Name Explorer
+    Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
+}
 
-$AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
-New-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -PropertyType DWord
-
-$UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1AA-37EF-4b3f-8CFC-4F3A74704073}"
-New-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -PropertyType DWord
+Disable-InternetExplorerESC
 
 function DownloadAndExpand
 {
@@ -48,18 +53,13 @@ SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [Classifieds] FROM DISK='C
 Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
 SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'"
 
-Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/IBuySpy.bak" -OutFile "c:\Databases\IBuySpy.bak"
-SQLCMD -E -S ${env:computername} -Q "RESTORE DATABASE [IBuySpy] FROM DISK='C:\Databases\IBuySpy.bak' WITH MOVE 'Store' TO 'C:\Databases\store.mdf', MOVE 'Store_Log' TO 'C:\Databases\Store_log.ldf'"
-
 SQLCMD -E -S ${env:computername} -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 SQLCMD -E -S ${env:computername} -Q "USE classifieds; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', 'APP${env:computername}\AppsSvcAcct'"
 SQLCMD -E -S ${env:computername} -Q "USE jobs; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE ibuyspy; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 
 SQLCMD -E -S ${env:computername} -Q "USE timetracker; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 SQLCMD -E -S ${env:computername} -Q "USE classifieds; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 SQLCMD -E -S ${env:computername} -Q "USE jobs; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
-SQLCMD -E -S ${env:computername} -Q "USE ibuyspy; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'"
 
 #ensure web server feature is enabled
 Add-WindowsFeature -Name Web-Server -IncludeAllSubFeature
@@ -82,15 +82,9 @@ c:\windows\system32\inetsrv\APPCMD add apppool /name:"JobsAppPool" /managedPipel
 c:\windows\system32\inetsrv\APPCMD add site /name:Jobs /id:3 /bindings:http://${env:computername}:8082 /physicalPath:C:\Apps\Jobs
 c:\windows\system32\inetsrv\APPCMD set site Jobs "/[path='/'].applicationPool:JobsAppPool"
 
-DownloadAndExpand -AppName "IBuySpy"
-c:\windows\system32\inetsrv\APPCMD add apppool /name:"IBuySpyAppPool" /managedPipelineMode:"Integrated"
-c:\windows\system32\inetsrv\APPCMD add site /name:IBuySpy /id:4 /bindings:http://${env:computername}:8084 /physicalPath:C:\Apps\IBuySpy
-c:\windows\system32\inetsrv\APPCMD set site IBuySpy "/[path='/'].applicationPool:IBuySpyAppPool"
-
 c:\windows\system32\inetsrv\appcmd set config /section:applicationPools "/[name='TimeTrackerAppPool'].processModel.identityType:SpecificUser" "/[name='TimeTrackerAppPool'].processModel.userName:${env:computername}\AppsSvcAcct" "/[name='TimeTrackerAppPool'].processModel.password:password1234!"
 c:\windows\system32\inetsrv\appcmd set config /section:applicationPools "/[name='ClassifiedsAppPool'].processModel.identityType:SpecificUser" "/[name='ClassifiedsAppPool'].processModel.userName:${env:computername}\AppsSvcAcct" "/[name='ClassifiedsAppPool'].processModel.password:password1234!"
 c:\windows\system32\inetsrv\appcmd set config /section:applicationPools "/[name='JobsAppPool'].processModel.identityType:SpecificUser" "/[name='JobsAppPool'].processModel.userName:${env:computername}\AppsSvcAcct" "/[name='JobsAppPool'].processModel.password:password1234!"
-c:\windows\system32\inetsrv\appcmd set config /section:applicationPools "/[name='IBuySpyAppPool'].processModel.identityType:SpecificUser" "/[name='IBuySpyAppPool'].processModel.userName:${env:computername}\AppsSvcAcct" "/[name='IBuySpyAppPool'].processModel.password:password1234!"
 
 #finally reboot
 Restart-Computer -Force
