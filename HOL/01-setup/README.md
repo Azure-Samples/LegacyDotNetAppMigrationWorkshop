@@ -83,7 +83,7 @@ The idea of this exercise is to show you how to monitor a deployment, that is in
 
 3. From the Resource Group list, select the one deployed in HOL 1 (e.g. AppModernization-RG)
 
-    ![image](./media/02-01-d.png)
+    ![resource group list](./media/ResourceGroupAzure.png)
 
 4. From the Resource Group blade, there is a left menu item list, click on `Deployments`
 
