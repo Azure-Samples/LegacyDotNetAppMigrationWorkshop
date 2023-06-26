@@ -58,7 +58,7 @@ For the deployment, we are using Azure Bicep to deploy the resources and setup t
 4. Open a Bash or PowerShell terminal on your local machine then change directories to the folder with the Bicep code.
    ```
    cd Shared/IaaS/Bicep
-
+    ```
 5. Set the environment variable for the region you wish to deploy to, and run the deployment to build the source environment.
 
     ```powershell
