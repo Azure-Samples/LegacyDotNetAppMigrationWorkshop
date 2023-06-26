@@ -37,7 +37,7 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 This hands-on-lab has the following exercises:
 
 1. [Exercise 1: Deployment of Azure resources](#exercise-1-deployment-of-azure-resources)
-2. [Exercise 2: Monitoring your deployment](#ex4)
+2. [Exercise 2: Monitoring your deployment](#exercise-2-monitoring-your-deployment)
 
 ### Exercise 1: Deployment of Azure resources
 
@@ -66,18 +66,10 @@ For the deployment, we are using Azure Bicep to deploy the resources and setup t
     az deployment sub create --location $Location --template-file main.bicep
     ```
     
-### Exercise 4: Monitoring your deployment<a name="ex4"></a>
+### Exercise 2: Monitoring your deployment<a name="ex4"></a>
 
 ----
-Although you can monitor your deployment from a PowerShell command prompt without any issues, CloudShell has a fixed timeout of **20 minutes**, if your deployment takes more than it to complete (our case, this deployment takes approximately 35 minutes) 
-
-You will see the following message:
-
-  ![image](./media/pic8.png)
-
-Since CloudShell is based on containers, when you reconnect, a new session will be presented to you and the deployment will be lost.
-
-As mentioned before, if your deployment was executed from a PowerShell command prompt in a Virtual Machine or your own physical computer, it will not timeout and you will see the result of the deployment like this one:
+Your deployment result should like the picture below once it completes in your Bash or PowerShell terminal. 
 
   ![image](./media/pic7.png)
 
@@ -107,7 +99,6 @@ The idea of this exercise is to show you how to monitor a deployment, that is in
 
 In this hands-on lab, you learned how to:
 
-* Use the Azure Cloud Shell
 * Deploy Azure resources from an automated template
 * Log on to the Azure Portal
 * Use Deployment blade item of the Resource Group to monitor a deployment
