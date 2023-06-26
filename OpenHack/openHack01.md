@@ -6,21 +6,15 @@ This document outlines the format for an Open Hack version of the App modernizat
 
 ## Deploy Azure Infrastructure
 
-* [ARM Template](../../Shared/ARM-NewIaaS)
-
-## Configure Source Applications
-
-* [ ] Get source code [zip files](../../Shared/SourceApps/Apps)
-* [ ] Get [database backups](../../Shared/SourceApps/Databases)
-* [ ] Configure web applications
+* [Bicep](../Shared/IaaS/Bicep/)
 
 ### Applications
 
 * Time Tracker
 * Classifieds
 * Jobs
+* iBuySpy
 * Optional
-  * iBuySpy
   * Pet Shop
 
 ## Inventory Source Applications
@@ -54,7 +48,7 @@ Options include
   * Azure Container Apps
 * Hybrid (Combination of VMs and PaaS)
 * Containers
-  * Virtual Machines or scalesets
+  * Virtual Machines or scale sets
   * Azure Kubernetes Service
 
 ## Identify pre-requisites

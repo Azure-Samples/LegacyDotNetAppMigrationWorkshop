@@ -37,6 +37,11 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
+#Debug dir
+Shared/ARM-NewIaaS/bin/Debug
+Shared/ARM-NewIaas/.vs
+Shared/ARM-NewIaas/obj
+
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 

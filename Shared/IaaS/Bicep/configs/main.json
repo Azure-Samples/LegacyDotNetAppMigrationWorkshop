@@ -1,0 +1,36 @@
+{
+    "location": "eastus",
+    "resourceGroup": "appmigworkshop",
+    "sqlvmname": "sqlvm",
+    "sqlAuthenticationLogin": "sqladmin",
+    "sqlAuthenticationPassword": "<Choose SQL Password>",
+    "ipAddressforRDP": "<Insert your IP Address>",
+    "resources": {
+        "virtualNetworkName": "app-mig-workshop-vnet",
+        "vmName": "app-vm-"
+    },
+    "vm":{
+        "publicIpName": "vmIP",
+        "publicIpSku": "Basic",
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsLabelPrefix": "",
+        "nicName": "myVMNic",
+        "vmSize": "Standard_D8s_v5",
+        "adminUsername": "vmadmin",
+        "adminPassword": "<Choose VM Password>",
+        "appusername": "AppsSvcAcct",
+        "apppassword": "<Choose App Password>"
+
+    },
+    "vnet":{
+        "subnetName": "default",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetPrefix":"10.0.0.0/24",
+        "networkSecurityGroupName": "app-mig-workshop-nsg"
+    },
+    "tags": {
+        "environment": "app-mig-workshop"
+    },
+    "numberVms": 1,
+    "initScript": ""
+}
