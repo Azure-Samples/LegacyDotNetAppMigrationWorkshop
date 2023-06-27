@@ -32,6 +32,11 @@ var config2019 = union(loadJsonContent('configs/main.json'),
   numberVms: 1
 })
 
+var configDC = union(loadJsonContent('configs/main.json'),
+{ 
+  numberVms: 1
+})
+
 var configBastion= union(loadJsonContent('configs/main.json'),
 { 
   initScript: loadTextContent('scripts/bastion/bastion.ps1')
@@ -58,6 +63,21 @@ module groups './modules/groups/resources.bicep' = {
   }
 }
 
+module domainController './modules/components/domain-controller/VirtualMachine.bicep' = [for number in range(1,configDC.numberVms): {
+  name: 'Microsoft.Resources.VM2022${number}'
+  scope: resourceGroup(configDC.resourceGroup)
+  params: {
+    config: configDC
+    imageRef: imagesRefs[7]
+    year: '2022'
+    number: string(number)
+  }
+  dependsOn: [
+    groups
+  ]
+}]
+
+
 // Legacy Apps from repo: Classifieds, TimeTracker, and Jobs on Server 2008
 module components2008R2 './modules/components/2008/VirtualMachine.bicep' = [for number in range(1,config2008.numberVms): {
   name: 'Microsoft.Resources.VM2008${number}'
@@ -70,6 +90,7 @@ module components2008R2 './modules/components/2008/VirtualMachine.bicep' = [for 
   }
   dependsOn: [
     groups
+    domainController
   ]
 }]
 
@@ -85,6 +106,7 @@ module components2012 './modules/components/2012/VirtualMachine.bicep' = [for nu
   }
   dependsOn: [
     groups
+    domainController
   ]
 }]
 
@@ -100,6 +122,7 @@ module components2016 './modules/components/2016/VirtualMachine.bicep' = [for nu
   }
   dependsOn: [
     groups
+    domainController
   ]
 }]
 
@@ -115,8 +138,10 @@ module components2019 './modules/components/2019/VirtualMachine.bicep' = [for nu
   }
   dependsOn: [
     groups
+    domainController
   ]
 }]
+
 
 // Bastion VM
 module bastion './modules/components/bastion/bastion.bicep' = [for number in range(1,configBastion.numberVms): {
@@ -128,16 +153,10 @@ module bastion './modules/components/bastion/bastion.bicep' = [for number in ran
   }
   dependsOn: [
     groups
+    domainController
   ]
 }]
 
 // ----------
 // Outputs
 // ----------
-
-//we do not return or log the vm password since that was passed as a param
-output appliedConfig object  = mergedConfig
-// output storage object = storage
-// output virtualmachines array = [for i in range(0, config.numberVms - 1): { 
-//     i: components2008R2[i].outputs 
-// }]
