@@ -27,6 +27,12 @@ This hands-on-lab has the following exercises:
   - [Exercises](#exercises)
     - [Exercise 1: Basic Dockerfile structure](#exercise-1-basic-dockerfile-structure)
     - [Exercise 2: Gather information for source apps](#exercise-2-gather-information-for-source-apps)
+      - [.NET Version](#net-version)
+      - [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
+      - [IIS \& Port 80](#iis--port-80)
+- [================================================================================================](#)
+- [Runtime Stage](#runtime-stage)
+- [================================================================================================](#-1)
 
 ### Exercise 1: Basic Dockerfile structure
 
@@ -61,3 +67,56 @@ FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
 
 ### Exercise 2: Gather information for source apps
 
+Let's think about what we know about the IBuySpy application.
+
+- Running .NET 4.8 
+- Hosted on IIS 7
+- Uses SQL database as the backend that is hosted locally on the same VM
+- Not using Windows Authentication
+- Runs on Port 80
+
+Let's break down each of the requirements and identify how they fit into our image build.
+
+#### .NET Version
+
+.NET 4.8 tells us that we need an image that either already has 4.8 installed or we need to install it using a package manager. For our builder stage we need an image that has the .NET 4.8 SDK with nuget and msbuild to compile our application. Below you'll see the build stage for IBuySpy.
+
+We use the most recent version of Windows Server from the Microsoft Container Registry that has the 4.8 SDK installed. We then create a site directory to hold our application files, copy the application files from our repository to the container, restore the nuget packages and build the application with msbuild. 
+
+```
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
+
+SHELL ["powershell"]
+
+WORKDIR C:\site
+
+COPY . C:\site
+
+RUN cd app/web; `
+	nuget restore ..\IBuySpyV3.sln -PackagesDirectory ..\packages; `
+	msbuild /p:Configuration=Release ..\IBuySpyV3.sln
+```
+#### Uses SQL database as the backend that is hosted locally on the same VM
+
+Since the application is dependent on a local SQL database, we need to migrate our SQL database before deploying our containerized application to AKS. The HoL 1 deployment deployed a SQL database for you that matches the IBuySpy local SQL database. 
+
+For deploying on AKS, you can pass updated values for your Web.config in through a config map which we will discuss in the DevOps with containers section for deploying to AKS. You won't need to modify any of your connection strings in your Web.config before deploying it to AKS as a container. 
+
+For deploying on App Service, App Service merges the App Settings from the Configuration section into the Web.config on the application. You won't need to modify any of your connection strings in your Web.config before deploying it to App Service as a container. 
+
+#### IIS & Port 80
+
+We need to host our application on IIS which means we need our runtime stage to use an image that has IIS 7 installed. See below. 
+
+```
+# ================================================================================================
+# Runtime Stage
+# ================================================================================================
+
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+
+SHELL ["powershell"]
+
+EXPOSE 80
+
+WORKDIR C:\site
