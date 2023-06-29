@@ -30,9 +30,6 @@ This hands-on-lab has the following exercises:
       - [.NET Version](#net-version)
       - [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
       - [IIS \& Port 80](#iis--port-80)
-- [================================================================================================](#)
-- [Runtime Stage](#runtime-stage)
-- [================================================================================================](#-1)
 
 ### Exercise 1: Basic Dockerfile structure
 
@@ -69,7 +66,7 @@ FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
 
 Let's think about what we know about the IBuySpy application.
 
-- Running .NET 4.8 
+- [Running .NET 4.8]
 - Hosted on IIS 7
 - Uses SQL database as the backend that is hosted locally on the same VM
 - Not using Windows Authentication
@@ -106,7 +103,11 @@ For deploying on App Service, App Service merges the App Settings from the Confi
 
 #### IIS & Port 80
 
-We need to host our application on IIS which means we need our runtime stage to use an image that has IIS 7 installed. See below. 
+We need to host our application on IIS which means we need our runtime stage to use an image that has IIS 7 installed. In the below code, you'll noticed that we're using the most recent version of Windows Server Core that includes IIS. 
+
+We noticed in the [inventory](#exercise-2-gather-information-for-source-apps) that our application runs on port 80. In the 3rd line of the Dockerfile, you'll see that we've exposed port 80 of the container to make the application accessible. 
+
+After we expose the port, we go on to enable the necessary features for running the application including Web-Server, .NET Framework 4.5 and HTTP tracing for debugging. We then configure the IIS server and add an entrypoint  
 
 ```
 # ================================================================================================
@@ -120,3 +121,70 @@ SHELL ["powershell"]
 EXPOSE 80
 
 WORKDIR C:\site
+
+#
+## Setup Operating System
+#
+## Enable IIS Remote Administration
+RUN Add-WindowsFeature Web-Server; `
+    Add-WindowsFeature NET-Framework-45-ASPNET; `
+    Add-WindowsFeature Web-Asp-Net45; `
+    Add-WindowsFeature Web-Http-Tracing
+
+## Debug Only: Remove for production
+RUN net user localadmin Qwerty123456 /add; `
+    net localgroup Administrators localadmin /add; ` 
+    Install-WindowsFeature Web-Mgmt-Service; `
+    New-ItemProperty -Path "HKLM:\software\microsoft\WebManagement\Server" -Name "EnableRemoteManagement" -Value 1 -Force
+
+# Setup IIS Server
+RUN New-WebAppPool "GMSAAppPool"; `
+	# Configure root AppPool to run as LocalSystem 
+	Set-ItemProperty `
+		-Path "IIS:\AppPools\GMSAAppPool" `
+		-Name "processModel" `
+		-Value @{identitytype=0}; `
+	# Replace Default Web Site
+	Remove-WebSite -Name 'Default Web Site'; `
+	New-WebSite `
+		-Name "Site" `
+		-Port 80 `
+		-PhysicalPath "C:\site" `
+		-ApplicationPool "GMSAAppPool"; `
+	# Configure for Anonymous Authentication
+	Set-WebConfigurationProperty `
+		-Location "Site" `
+		-PSPath IIS:\ `
+		-Filter "system.webServer/security/authentication/anonymousAuthentication" `
+		-Name "enabled" `
+		-Value $true; `
+	# Configure monitoring
+	Set-WebConfigurationProperty `
+		-pspath 'MACHINE/WEBROOT/APPHOST' `
+		-filter "system.applicationHost/sites/siteDefaults/logFile" `
+		-name "logTargetW3C" -value "File,ETW";
+
+
+## Copy compiled files from Builder Stage
+COPY --from=builder C:\site\app\web c:\site\
+#
+## Create Web Applications and configure authentication
+#
+## Debug Only: Enable verbose logging for kerberos in the Windows Event Viewer
+RUN New-ItemProperty `
+	-Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters `
+	-Name LogLevel `
+	-PropertyType DWord `
+	-Value 1 `
+	-Force
+
+# Check application health against anonymous endpoint
+HEALTHCHECK CMD powershell -command `  
+    try { `
+     $response = iwr http://localhost:80 -UseBasicParsing; `
+     if ($response.StatusCode -eq 200) { return 0} `
+     else {return 1}; `
+    } catch { return 1 }
+
+ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
+```
