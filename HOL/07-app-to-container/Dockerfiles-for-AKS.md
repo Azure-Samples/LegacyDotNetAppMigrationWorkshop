@@ -22,14 +22,15 @@ In this lab, you will learn how to construct a Dockerfile for a .NET framework a
 This hands-on-lab has the following exercises:
 
 - [Windows Containers: How to containerize a legacy app for AKS](#windows-containers-how-to-containerize-a-legacy-app-for-aks)
-  - [Overview](#overview)
-  - [Prerequisites](#prerequisites)
-  - [Exercises](#exercises)
-    - [Exercise 1: Basic Dockerfile structure](#exercise-1-basic-dockerfile-structure)
-    - [Exercise 2: Gather information for source apps](#exercise-2-gather-information-for-source-apps)
-      - [.NET Version](#net-version)
-      - [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
-      - [IIS \& Port 80](#iis--port-80)
+	- [Overview](#overview)
+	- [Prerequisites](#prerequisites)
+	- [Exercises](#exercises)
+		- [Exercise 1: Basic Dockerfile structure](#exercise-1-basic-dockerfile-structure)
+		- [Exercise 2: Gather information for source apps](#exercise-2-gather-information-for-source-apps)
+			- [.NET Version](#net-version)
+			- [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
+			- [IIS \& Port 80](#iis--port-80)
+	- [Exercise 3: Put it all together and build your image](#exercise-3-put-it-all-together-and-build-your-image)
 
 ### Exercise 1: Basic Dockerfile structure
 
@@ -66,7 +67,7 @@ FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
 
 Let's think about what we know about the IBuySpy application.
 
-- [Running .NET 4.8]
+- Running .NET 4.8
 - Hosted on IIS 7
 - Uses SQL database as the backend that is hosted locally on the same VM
 - Not using Windows Authentication
@@ -77,8 +78,6 @@ Let's break down each of the requirements and identify how they fit into our ima
 #### .NET Version
 
 .NET 4.8 tells us that we need an image that either already has 4.8 installed or we need to install it using a package manager. For our builder stage we need an image that has the .NET 4.8 SDK with nuget and msbuild to compile our application. Below you'll see the build stage for IBuySpy.
-
-We use the most recent version of Windows Server from the Microsoft Container Registry that has the 4.8 SDK installed. We then create a site directory to hold our application files, copy the application files from our repository to the container, restore the nuget packages and build the application with msbuild. 
 
 ```
 FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
@@ -93,6 +92,8 @@ RUN cd app/web; `
 	nuget restore ..\IBuySpyV3.sln -PackagesDirectory ..\packages; `
 	msbuild /p:Configuration=Release ..\IBuySpyV3.sln
 ```
+We use the most recent version of Windows Server from the Microsoft Container Registry that has the 4.8 SDK installed. We then create a site directory to hold our application files, copy the application files from our repository to the container, restore the nuget packages and build the application with msbuild. 
+
 #### Uses SQL database as the backend that is hosted locally on the same VM
 
 Since the application is dependent on a local SQL database, we need to migrate our SQL database before deploying our containerized application to AKS. The HoL 1 deployment deployed a SQL database for you that matches the IBuySpy local SQL database. 
@@ -107,7 +108,7 @@ We need to host our application on IIS which means we need our runtime stage to 
 
 We noticed in the [inventory](#exercise-2-gather-information-for-source-apps) that our application runs on port 80. In the 3rd line of the Dockerfile, you'll see that we've exposed port 80 of the container to make the application accessible. 
 
-After we expose the port, we go on to enable the necessary features for running the application including Web-Server, .NET Framework 4.5 and HTTP tracing for debugging. We then configure the IIS server and add an entrypoint  
+After we expose the port, we go on to enable the necessary features for running the application including Web-Server, .NET Framework 4.5 and HTTP tracing for debugging. We then configure the IIS server and add an entrypoint.   
 
 ```
 # ================================================================================================
@@ -188,3 +189,130 @@ HEALTHCHECK CMD powershell -command `
 
 ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
 ```
+## Exercise 3: Put it all together and build your image
+
+Now that we have all of the pieces for our application, let's put it all together and build it. 
+
+Your Dockerfile should look like this: 
+
+```
+# escape=`
+
+# ================================================================================================
+# Builder Stage
+# ================================================================================================
+
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
+
+SHELL ["powershell"]
+
+WORKDIR C:\site
+
+COPY . C:\site
+
+RUN cd app/web; `
+	nuget restore ..\IBuySpyV3.sln -PackagesDirectory ..\packages; `
+	msbuild /p:Configuration=Release ..\IBuySpyV3.sln
+
+# ================================================================================================
+# Runtime Stage
+# ================================================================================================
+
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+
+SHELL ["powershell"]
+
+EXPOSE 80
+
+WORKDIR C:\site
+
+#
+## Setup Operating System
+#
+## Enable IIS Remote Administration
+RUN Add-WindowsFeature Web-Server; `
+    Add-WindowsFeature NET-Framework-45-ASPNET; `
+    Add-WindowsFeature Web-Asp-Net45; `
+    Add-WindowsFeature Web-Http-Tracing
+
+## Debug Only: Remove for production
+RUN net user localadmin Qwerty123456 /add; `
+    net localgroup Administrators localadmin /add; ` 
+    Install-WindowsFeature Web-Mgmt-Service; `
+    New-ItemProperty -Path "HKLM:\software\microsoft\WebManagement\Server" -Name "EnableRemoteManagement" -Value 1 -Force
+
+# Setup IIS Server
+RUN New-WebAppPool "GMSAAppPool"; `
+	# Configure root AppPool to run as LocalSystem 
+	Set-ItemProperty `
+		-Path "IIS:\AppPools\GMSAAppPool" `
+		-Name "processModel" `
+		-Value @{identitytype=0}; `
+	# Replace Default Web Site
+	Remove-WebSite -Name 'Default Web Site'; `
+	New-WebSite `
+		-Name "Site" `
+		-Port 80 `
+		-PhysicalPath "C:\site" `
+		-ApplicationPool "GMSAAppPool"; `
+	# Configure for Anonymous Authentication
+	Set-WebConfigurationProperty `
+		-Location "Site" `
+		-PSPath IIS:\ `
+		-Filter "system.webServer/security/authentication/anonymousAuthentication" `
+		-Name "enabled" `
+		-Value $true; `
+	# Configure monitoring
+	Set-WebConfigurationProperty `
+		-pspath 'MACHINE/WEBROOT/APPHOST' `
+		-filter "system.applicationHost/sites/siteDefaults/logFile" `
+		-name "logTargetW3C" -value "File,ETW";
+
+
+## Copy compiled files from Builder Stage
+COPY --from=builder C:\site\app\web c:\site\
+#
+## Create Web Applications and configure authentication
+#
+## Debug Only: Enable verbose logging for kerberos in the Windows Event Viewer
+RUN New-ItemProperty `
+	-Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters `
+	-Name LogLevel `
+	-PropertyType DWord `
+	-Value 1 `
+	-Force
+
+# Check application health against anonymous endpoint
+HEALTHCHECK CMD powershell -command `  
+    try { `
+     $response = iwr http://localhost:80 -UseBasicParsing; `
+     if ($response.StatusCode -eq 200) { return 0} `
+     else {return 1}; `
+    } catch { return 1 }
+
+# Start the metric hub entrypoint
+ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
+```
+1. If not already connected, connect to the jump box using Bastion via [RDP](https://learn.microsoft.com/azure/bastion/bastion-connect-vm-rdp-windows) or [SSH](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-windows). See [HOL 1](../01-setup/README.md) if you haven't deployed the infrastructure already. Remember you will need to put ```appmigws\``` before your VM username to login to the box. 
+2. Open up Docker Desktop for Windows by typing *Docker* into the Windows search box. Once it opens, go to your toolbar and right click on the tiny Docker icon. 
+   1. If it says *Switch to Linux containers*, that means it is configured to support Windows Containers
+   2. If it says *Switch to windows containers*, click that option and confirm. Wait for it restart Docker before going to the next step.
+3. Open a Git Bash terminal. 
+4. Clone this repository to the jumpbox with the following command:
+   ```
+   git clone https://github.com/Azure-Samples/LegacyDotNetAppMigrationWorkshop
+   ```
+5. Unzip the [IBuySpy application](../../Shared/SourceApps/Apps/IBuySpy.zip) to a folder of your choosing
+6. Copy the contents of the Dockerfile you created above into the existing Dockerfile with the application
+7. If you'd like to test the container locally before deploying to AKS or App Service, you will need to update the SQL database connection string in the Web.config file. 
+   1. Grab the connection string from your Azure SQL database in the Portal
+   2. Replace the value for *ConnectionStringPaas* to your SQL connection string
+8. Using your Bash terminal, run the docker build command from the web folder:
+   ```
+   cd app/web
+   docker build -t ibuyspy:v1 -f Dockerfile .
+   ```
+9.  If you updated the SQL connection string, you can run the following command to test your container locally:
+	```
+	docker run -d -p 80:80 ibuyspy:v1
+	```
