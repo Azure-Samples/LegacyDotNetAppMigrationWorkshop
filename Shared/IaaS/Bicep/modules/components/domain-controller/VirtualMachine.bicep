@@ -8,7 +8,7 @@ targetScope = 'resourceGroup'
 // Variables
 // ---------
 
-var command = '$password = ConvertTo-SecureString ${config.vm.adminPassword} -AsPlainText -Force; Import-Module ADDSDeployment; Initialize-Disk -Number 1 -PartitionStyle MBR; New-Partition -DiskNumber 1 -UseMaximumSize -DriveLetter F; Format-Volume -DriveLetter F -FileSystem NTFS; Add-WindowsFeature -name ad-domain-services -IncludeManagementTools; Install-ADDSForest -CreateDnsDelegation:$false -DomainMode Win2012R2 -DomainName "appmigrationworkshop.com" -DatabasePath "F:\\\\NTDS" -LogPath "F:\\\\NTDS" -SYSVOLPath "F:\\\\SYSVOL" -DomainNetbiosName "appmigws" -ForestMode Win2012R2 -InstallDns:$true -SafeModeAdministratorPassword $password -Force:$true; shutdown -r -t 10; exit 0'
+var command = '$password = ConvertTo-SecureString ${config.vm.adminPassword} -AsPlainText -Force; Import-Module ADDSDeployment; Initialize-Disk -Number 1 -PartitionStyle MBR; New-Partition -DiskNumber 1 -UseMaximumSize -DriveLetter F; Format-Volume -DriveLetter F -FileSystem NTFS; Add-WindowsFeature -name ad-domain-services -IncludeManagementTools; Install-ADDSForest -CreateDnsDelegation:$false -DomainMode Win2012R2 -DomainName "appmigrationworkshop.com" -DatabasePath "F:\\\\NTDS" -LogPath "F:\\\\NTDS" -SYSVOLPath "F:\\\\SYSVOL" -DomainNetbiosName "appmigws" -ForestMode Win2012R2 -InstallDns:$true -SafeModeAdministratorPassword $password -Force:$true; shutdown -r -t 10; Set-DnsServerForwarder -IPAddress 168.63.129.16; exit 0'
 
 // ---------
 // Resources
@@ -34,13 +34,11 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: pip.id
-          }
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', config.resources.virtualNetworkName, config.vnet.subnetName)
           }
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: config.domainControllerIP
         }
       }
     ]
