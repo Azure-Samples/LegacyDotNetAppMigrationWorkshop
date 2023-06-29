@@ -25,6 +25,4 @@ Add-WindowsFeature -name ad-domain-services -IncludeManagementTools
 
 Install-ADDSForest -CreateDnsDelegation:$false -DomainMode Win2012R2 -DomainName "appmigrationworkshop.com" -DatabasePath "F:\\\\NTDS" -LogPath "F:\\\\NTDS" -SYSVOLPath "F:\\\\SYSVOL" -DomainNetbiosName "appmigws" -ForestMode Win2012R2 -InstallDns:$true -SafeModeAdministratorPassword $password -Force
 
-Set-DnsServerForwarder -IPAddress 168.63.129.16
-
 exit 0
