@@ -53,7 +53,7 @@ In this lab you will learn advanced techniques for working with Windows Containe
 
 ---
 
-## HOL 7 - [Migrate Source Apps to Windows Containers](07-app-to-container/README.md)
+## HOL 7 - [Migrate Source Apps to Windows Containers](07-app-to-container/Dockerfiles-for-Azure.md)
 
 In this lab you will learn how to containerize legacy applications
 
