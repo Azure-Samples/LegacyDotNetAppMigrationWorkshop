@@ -1,10 +1,10 @@
-# Windows Containers: How to containerize a legacy app for AKS
+# Windows Containers: How to containerize a legacy app for AKS and App Service
 
 ## Overview
 
 In this lab, you will learn how to:
 
-* Containerize an existing application with Docker optimized for AKS
+* Containerize an existing application with Docker optimized for AKS and App Service
 
 In the other lab in this section, you learn(ed) how to use Image2Docker to convert an ASP.NET application to a Dockerfile. While this tool helps us handle the process in an automated fashion, it does not use optimized images to host your application. One of the big benefits of AKS is its ability to scale quickly and efficiently. .NET Framework takes up a lot of space on a machine and the bigger the image, the harder it is for AKS to scale. 
 
