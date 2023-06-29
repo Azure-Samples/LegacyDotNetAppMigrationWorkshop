@@ -34,13 +34,11 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: pip.id
-          }
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', config.resources.virtualNetworkName, config.vnet.subnetName)
           }
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: config.domainControllerIP
         }
       }
     ]

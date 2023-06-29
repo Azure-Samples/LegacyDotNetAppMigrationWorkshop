@@ -18,6 +18,11 @@ resource vn 'Microsoft.Network/virtualNetworks@2021-02-01' = {
         config.vnet.addressPrefix
       ]
     }
+    dhcpOptions: {
+      dnsServers: [
+          config.domainControllerIP
+      ]
+    }
     subnets: [
       {
         name: config.vnet.subnetName

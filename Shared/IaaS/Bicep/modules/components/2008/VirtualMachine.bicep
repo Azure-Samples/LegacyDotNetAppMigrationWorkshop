@@ -86,6 +86,30 @@ resource vmFEIISEnabled 'Microsoft.Compute/virtualMachines/runCommands@2022-03-0
   }
 }
 
+resource vmJoindomain 'Microsoft.Compute/virtualMachines/extensions@2018-10-01' = {
+  name: 'joinDomain'
+  parent: vm
+  location: config.location
+  dependsOn: [
+    vmFEIISEnabled
+  ]
+  properties: {
+    publisher: 'Microsoft.Compute'
+    type: 'JsonADDomainExtension'
+    typeHandlerVersion: '1.3'
+    autoUpgradeMinorVersion: true
+    settings: {
+      name: 'appmigrationworkshop.com'
+      user: 'appmigws\\${config.vm.adminUsername}'
+      restart: 'true'
+      options: '3'
+    }
+    protectedSettings: {
+      password: config.vm.adminPassword
+    }
+  }
+}
+
 // ----------
 // Parameters
 // ----------
