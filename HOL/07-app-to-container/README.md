@@ -1,377 +1,321 @@
-# Windows Containers
+# Windows Containers: How to containerize a legacy app for AKS and App Service
 
 ## Overview
 
 In this lab, you will learn how to:
 
-* Containerize and existing application using the Image2Docker community tools
-* Add Docker support to an existing legacy application
+* Containerize an existing application with Docker optimized for AKS and App Service
+
+In the other lab in this section, you learn(ed) how to use Image2Docker to convert an ASP.NET application to a Dockerfile. While this tool helps us handle the process in an automated fashion, it does not use optimized images to host your application. One of the big benefits of AKS is its ability to scale quickly and efficiently. .NET Framework takes up a lot of space on a machine and the bigger the image, the harder it is for AKS to scale. 
+
+In this lab, you will learn how to construct a Dockerfile for a .NET framework application using best practices for AKS. 
 
 ## Prerequisites
 
-* Ensure you have completed the previous labs
-* Ensure you have installed the following:
-  * Powershell 5.0 or later is required for Image2Docker
-  * Docker
+* Completed the resource deployment in [HoL 1](../01-setup/README.md)
 
 ## Exercises
 
 This hands-on-lab has the following exercises:
 
-1. [Exercise 1: Gather information for source apps](#ex1)
-1. [Exercise 2: Install Image2Docker Community Tool](#ex2)
-1. [Exercise 3: Containerize Web Apps](#ex3)
-1. [Exercise 4: Cut over/Finalize Migration](#ex4)
-1. [Exercise 5: Add Docker support to a legacy application](#ex5)
+- [Windows Containers: How to containerize a legacy app for AKS and App Service](#windows-containers-how-to-containerize-a-legacy-app-for-aks-and-app-service)
+	- [Overview](#overview)
+	- [Prerequisites](#prerequisites)
+	- [Exercises](#exercises)
+		- [Exercise 1: Basic Dockerfile structure](#exercise-1-basic-dockerfile-structure)
+		- [Exercise 2: Gather information for source apps](#exercise-2-gather-information-for-source-apps)
+			- [.NET Version](#net-version)
+			- [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
+			- [IIS \& Port 80](#iis--port-80)
+	- [Exercise 3: Put it all together and build your image](#exercise-3-put-it-all-together-and-build-your-image)
 
-### Exercise 1: Gather information for source apps<a name="ex1"></a>
+### Exercise 1: Basic Dockerfile structure
 
-1. In the Azure Portal, locate the machine name of the Web server. The machine will suffixed with `-web`. Copy the machine name to the clipboard.
+For the purposes of this lab, we'll focus on the IBuySpy sample application which runs .NET 4.8. 
 
-    ![image](./media/2018-03-18_19-33-48.png)
+We want to split our Dockerfile into 2 stages: build and runtime. 
 
-1. From the JumpBox, start a remote desktop connection to the `Web Server` machine
+The build stage uses the full .NET framework SDK to build the application and produce the deploy artifacts necessary for running the application. By doing this, we generate all of the build artifacts required for the application to run without having to have the full SDK in the runtime stage. 
 
-    ![image](./media/2018-03-13_8-15-41.png)
+The runtime stage uses a base WindowsServer Core image with IIS to host the application. During this stage, we'll enable only the Windows features our application needs to run including .NET Framework 45 and IIS remote administration for debugging. 
 
-1. Enter the Web Server VM name and click `Connect`. Enter the Administrator credentials and click `Ok`
+This type of optimization allows us to bring the image size from ~11.5 Gb to 5.5 Gb - a more than 50% reduction in size. 
 
-    ![image](./media/2018-03-18_19-35-59.png)
+See below for an example of the structure you will use to create your Dockerfile in the next exercise. 
 
-1. open the IIS Manager, you should see all the source apps deployed.
+```
+# ================================================================================================
+# Builder Stage
+# ================================================================================================
 
-    ![image](./media/07-a-1.PNG)
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
+...
+...
+# ================================================================================================
+# Runtime Stage
+# ================================================================================================
 
-1. Navigate to each of the sites to make sure they are up and running
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+...
+...
+```
 
-    * http://classifieds
-    * http://jobs
-    * http://timetracker
+### Exercise 2: Gather information for source apps
 
-1. While on the web app host, identify the IP address of the current server, we will need that for image2docker.
+Let's think about what we know about the IBuySpy application.
 
-    ```powershell
-    ipconfig
+- Running .NET 4.8
+- Hosted on IIS 7
+- Uses SQL database as the backend that is hosted locally on the same VM
+- Not using Windows Authentication
+- Runs on port 80
 
-    Windows IP Configuration
-    Ethernet adapter Local Area Connection:
+Let's break down each of the requirements and identify how they fit into our image build.
 
-    Connection-specific DNS Suffix  . : reddog.microsoft.com
-    Link-local IPv6 Address . . . . . : fe80::c0f9:22f0:a23c:1688%12
-    IPv4 Address. . . . . . . . . . . : 10.0.1.11
-    Subnet Mask . . . . . . . . . . . : 255.255.255.0
-    Default Gateway . . . . . . . . . : 10.0.1.1
-    ```
+#### .NET Version
 
-### Exercise 2: Install Image2Docker Community Tool<a name="ex2"></a>
+.NET 4.8 tells us that we need an image that either already has 4.8 installed or we need to install it using a package manager. For our builder stage we need an image that has the .NET 4.8 SDK with nuget and msbuild to compile our application. Below you'll see the build stage for IBuySpy.
 
-1. RDP into the `Windows Container Azure VM`. It is suffixed with `-cnt`
+```
+# escape=`
 
-    ![image](./media/2018-03-18_6-20-25.png)
+# ================================================================================================
+# Builder Stage
+# ================================================================================================
 
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
 
-1. Open `PowerShell`, and execute the following command
+SHELL ["powershell"]
 
-    ```powershell
-    Install-Module Image2Docker
-    Import-Module Image2Docker
-    ```
+WORKDIR C:\site
+
+COPY . C:\site
 
-1. Now that we have image2docker installed, and we have looked briefly at the usage of the tool, we will now use the image2docker tool from our Windows Container host to inspect our IIS/ASP.NET web sites on a Remote Machine.
+RUN cd app/web; `
+	nuget restore ..\IBuySpyV3.sln -PackagesDirectory ..\packages; `
+	msbuild /p:Configuration=Release ..\IBuySpyV3.sln
+```
+We use the most recent version of Windows Server from the Microsoft Container Registry that has the 4.8 SDK installed. We then create a site directory to hold our application files, copy the application files from our repository to the container, restore the nuget packages and build the application with msbuild. 
 
-### Exercise 2: Containerize Web Apps<a name="ex2"></a>
+#### Uses SQL database as the backend that is hosted locally on the same VM
 
-In this exercise we will containerize the applications that we deployed in HOL 2.
+Since the application is dependent on a local SQL database, we need to migrate our SQL database before deploying our containerized application to AKS. The HoL 1 deployment created an Azure SQL database from a backup of the local IBuySpy database. 
 
-1. If not already connected, RDP into the `Windows Container Azure VM`. It is suffixed with `-cnt`
+For deploying on AKS, you can pass updated values for your Web.config in through a config map which we will discuss in the DevOps with containers section for deploying to AKS. You won't need to modify any of your connection strings in your Web.config before deploying it to AKS as a container. 
 
-    ![image](./media/2018-03-18_6-20-25.png)
+For deploying on App Service, App Service merges the App Settings from the Configuration section into the Web.config on the application. You won't need to modify any of your connection strings in your Web.config before deploying it to App Service as a container. 
 
-1. From powershell execute the following commands
+#### IIS & Port 80
 
-    ```powershell
-    cd c:\
-    mkdir dockerimages
-    cd dockerimages
-    mkdir jobs, timetracker, classifieds
-    ```
+We need to host our application on IIS which means we need our runtime stage to use an image that has IIS 7 installed. In the below code, you'll noticed that we're using the most recent version of Windows Server Core that includes IIS. 
 
-1. Containerize each of the apps individually. Replace the IP address with the IP Address of your web server
+We also noticed in the [inventory](#exercise-2-gather-information-for-source-apps) that our application runs on port 80. In the 3rd line of the Dockerfile, you'll see that we've exposed port 80 of the container to make the application accessible. 
 
-    ````powershell
-    #Jobs
-    ConvertTo-Dockerfile -RemotePath \\[YOUR WEB SERVER IP ADDRESS]\c$ -OutputPath c:\dockerimages\jobs -Artifact IIS -ArtifactParam Jobs
-    #TimeTracker
-    ConvertTo-Dockerfile -RemotePath \\[YOUR WEB SERVER IP ADDRESS]\c$ -OutputPath c:\dockerimages\timetracker -Artifact IIS -ArtifactParam TimeTracker
-    #Classifieds
-    ConvertTo-Dockerfile -RemotePath \\[YOUR WEB SERVER IP ADDRESS]\c$ -OutputPath c:\dockerimages\classifieds -Artifact IIS -ArtifactParam Classifieds
-    ````
+After we expose the port, we go on to enable the necessary features for running the application including Web-Server, .NET Framework 4.5 and HTTP tracing for debugging. We then configure the IIS server and add an entrypoint.   
 
-1. The timetracker app requires a classic app pool. Let's change the docker file. Change if from:
+```
+# ================================================================================================
+# Runtime Stage
+# ================================================================================================
 
-    ````powershell
-    RUN New-Website -Name 'TimeTracker' -PhysicalPath 'C:\Apps\TimeTracker' -Port 80 -ApplicationPool '.NET v2.0' -Force;
-    ````
-
-    To:
-    ````powershell
-    RUN New-Website -Name 'TimeTracker' -PhysicalPath 'C:\Apps\TimeTracker' -Port 80 -ApplicationPool 'Classic .NET AppPool' -Force;
-    ````
-
-1. Build the Docker Images
-
-    ````powershell
-    cd c:\dockerimages
-    docker build -t jobs-site ./jobs
-    docker build -t timetracker-site ./timetracker
-    docker build -t classifieds-site ./classifieds
-    ````
-
-    >
-    > This will take some time to build the images once the images are done, run the following:
-
-    ````powershell
-    docker images
-    ````
-    >
-
-1. Once the builds are complete, you should see something like this:
-
-    ```powershell
-    REPOSITORY          TAG                                     IMAGE ID            CREATED             SIZE
-    classifieds-site    latest                                  608d1205dc2d        7 minutes ago       14.3GB
-    timetracker-site    latest                                  54e6a9eb4975        8 minutes ago       14.3GB
-    jobs-site           latest                                  5f529280222e        13 minutes ago      14.3GB
-    microsoft/iis       latest                                  6608c8e5b344        6 weeks ago         10.7GB
-    microsoft/aspnet    3.5-windowsservercore-10.0.14393.1715   b2a36e946a02        5 months ago        14.1GB
-    ```
-
-1. Let's run a container for TimeTracker. Remember that the container is now running as the gSMA so we need to start it with the credential spec file.
-
-    ````powershell
-    docker run -d -p 80:80 timetracker-site -h timetrackersite --security-opt "credentialspec=file://win.json" timetracker-site
-    ````
-
-    Verify that the container is running
-
-    ````powershell
-    docker ps
-
-    # You should see something like this. Make note of the container name
-    CONTAINER ID        IMAGE               COMMAND                   CREATED              STATUS              PORTS                NAMES
-    5ff3a058f09f        timetracker-site        "C:\\ServiceMonitor..."   About a minute ago   Up About a minute   0.0.0.0:80->80/tcp [YOUR CONTAINER NAME]
-    ````
-
-    ````powershell
-    docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" [YOUR CONTAINER NAME]
-
-    # You should see something like this
-    172.19.249.182
-    ```
-
-1. RDP to the SQL machine and add the gSMA account to the databases. Open SQL Management Studio to preform the following query.
-
-    ````sql
-    CREATE LOGIN [appmig\chost-gmsa$] FROM WINDOWS
-    sp_addsrvRolemember "appmig\chost-gmsa$", "sysadmin"
-    USE [Jobs]
-    GO
-    CREATE USER [appmig\chost-gmsa$] FOR LOGIN [appmig\chost-gmsa$] WITH DEFAULT_SCHEMA=[dbo]
-    GO
-    USE [Timetracker]
-    GO
-    CREATE USER [appmig\chost-gmsa$] FOR LOGIN [appmig\chost-gmsa$] WITH DEFAULT_SCHEMA=[dbo]
-    GO
-    USE [Classifieds]
-    GO
-    CREATE USER [appmig\chost-gmsa$] FOR LOGIN [appmig\chost-gmsa$] WITH DEFAULT_SCHEMA=[dbo]
-    GO
-    ````
-
-1. Go back to the container host, open a browser and navigate to `http://[YOUR CONTAINER IP ADDRESS]`. You should now see the `timetracker` Web site running inside the container.
-
-    ![image](./media/07-a-2.PNG)
-
-### Exercise 3:  Cut over/Finalize Migration<a name="ex3"></a>
-
-Now that we have an application up and running in a container on our Container host, the last step is you to finalize the migration. We will do that by simply cutting over the routing and DNS information
-
-1. Update the DNS records by RDP-ing into the DNS/AD Server
-
-1. Once on the server, launch `DNS manager`
-
-    ![image](./media/2018-03-20_0-32-01.png)
-
-1. Here we can see that the `timetracker` dns record is a A NAME record pointing to '10.0.0.4', the address of the current web server
-
-    ![image](./media/07-a-3.PNG)
-
-1. Select and delete the current A Name record
-
-    ![image](./media/2018-03-20_0-36-38.png)
-
-1. Create a new CNAME record to point to the Windows Container host, in this case ''. `Right-click` and select `New Alias (CNAME)`
-
-    ![image](./media/2018-03-20_0-37-41.png)
-
-1. Add `timetracker` as the name, select `Browse` and navigate to the container host. Select the record and click `Ok` and `Ok` to save
-
-    ![image](./media/07-a-4.PNG)
-
-1. Open a powershell command prompt and flush the DNS records
-
-    ````powershell
-    ipconfig /flushdns
-    ````
-
-1. Open a browser to verify that you can get to the site using the name.
-
-    ![image](./media/2018-03-20_0-39-46.png)
-
-### Exercise 4: Add Docker support to an existing application<a name="ex4"></a>
-
-In this HOL we will go through creating the solution into Visual Studio 2017 and adding support for Docker Containers. We need to do this becuase the applicaiton was written in an over version of Visual Studio and we need to update it.
-The `Jobs` application is used as the source, but the treatment will be similar for each source application
-
-#### Assumptions
-
-* You have Visual Studio 2017 Installed or are accessing the application from the jump box
-* You have the source solution downloaded from the repo
-* You have .NET 3.5 Installed
-
-1. Make sure you have the Jobs Source Apps downloaded on your Jump Box. In this example they are located in the `C:\AppMigrationWorkshop\Shared\SourceApps\Apps\Jobs` folder
-
-    ![image](./media/06-02-a.png)
-
-1. Open Visual Studio 2017. Select `File > New Website` and choose `ASP.NET Empty Web Site` as the template. Choose a new location (in this example `c:\apps`) and Name the WebSite `JobsSite`
-
-    ![image](./media/hol7-4-step2.PNG)
-
-
-    
-1. You should now have an empty web site solution as a target to copy the Jobs source files.
-
-1. Open Windows Explorer and navigate to the folder where you have stored the Jobs Source Files
-
-1. Select all and copy all the files to the clipboard.
-
-    ![image](./media/06-02-c.png)
-
-1. Paste them into the Empty Visual Studio 2017 Solution.
-
-    ![image](./media/06-02-d.png)
-
-1. If prompted that files exist, select `Apply to all items` and `Yes`
-
-    ![image](./media/2018-03-18_5-55-25.png)
-
-1. Delete the `MyTemplate.vstemplate` and `ProjectName.webproj` files. These files were used with the older version of Visual Studio and are not longer needed.
-
-    ![image](./media/06-02-f.png)
-
-1. All the files should now be in the solution/project.
-
-    ![image](./media/hol7-4-d.PNG)
-
-1. Remove the files "ProjectName.webproj" and "MyTemplate.vstemplate". These file types are no longer supported in VS 2017
-1. Open PowerShell on the Jump Box and navigate to the project folder for the website you created
-	`Note: if you didnt update the path earlier and kept the default all projects are stored under C:\users\appmigadmin\documents\Visual Studio 2017\Projects`
-1. Open PowerShell on the Jump Box and navigate to the project folder for the website you created
-	`Note: if you didnt update the path earlier and kept the default all projects are stored under C:\users\appmigadmin\documents\Visual Studio 2017\Projects`
-1. Create a Dockerfile as follows
-	```powershell
-	new-item -type file -path .\Dockerfile
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+
+SHELL ["powershell"]
+
+EXPOSE 80
+
+WORKDIR C:\site
+
+#
+## Setup Operating System
+#
+## Enable IIS Remote Administration
+RUN Add-WindowsFeature Web-Server; `
+    Add-WindowsFeature NET-Framework-45-ASPNET; `
+    Add-WindowsFeature Web-Asp-Net45; `
+    Add-WindowsFeature Web-Http-Tracing
+
+## Debug Only: Remove for production
+RUN net user localadmin Qwerty123456 /add; `
+    net localgroup Administrators localadmin /add; ` 
+    Install-WindowsFeature Web-Mgmt-Service; `
+    New-ItemProperty -Path "HKLM:\software\microsoft\WebManagement\Server" -Name "EnableRemoteManagement" -Value 1 -Force
+
+# Setup IIS Server
+RUN New-WebAppPool "GMSAAppPool"; `
+	# Configure root AppPool to run as LocalSystem 
+	Set-ItemProperty `
+		-Path "IIS:\AppPools\GMSAAppPool" `
+		-Name "processModel" `
+		-Value @{identitytype=0}; `
+	# Replace Default Web Site
+	Remove-WebSite -Name 'Default Web Site'; `
+	New-WebSite `
+		-Name "Site" `
+		-Port 80 `
+		-PhysicalPath "C:\site" `
+		-ApplicationPool "GMSAAppPool"; `
+	# Configure for Anonymous Authentication
+	Set-WebConfigurationProperty `
+		-Location "Site" `
+		-PSPath IIS:\ `
+		-Filter "system.webServer/security/authentication/anonymousAuthentication" `
+		-Name "enabled" `
+		-Value $true; `
+	# Configure monitoring
+	Set-WebConfigurationProperty `
+		-pspath 'MACHINE/WEBROOT/APPHOST' `
+		-filter "system.applicationHost/sites/siteDefaults/logFile" `
+		-name "logTargetW3C" -value "File,ETW";
+
+
+## Copy compiled files from Builder Stage
+COPY --from=builder C:\site\app\web c:\site\
+#
+## Create Web Applications and configure authentication
+#
+## Debug Only: Enable verbose logging for kerberos in the Windows Event Viewer
+RUN New-ItemProperty `
+	-Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters `
+	-Name LogLevel `
+	-PropertyType DWord `
+	-Value 1 `
+	-Force
+
+# Check application health against anonymous endpoint
+HEALTHCHECK CMD powershell -command `  
+    try { `
+     $response = iwr http://localhost:80 -UseBasicParsing; `
+     if ($response.StatusCode -eq 200) { return 0} `
+     else {return 1}; `
+    } catch { return 1 }
+
+ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
+```
+## Exercise 3: Put it all together and build your image
+
+Now that we have all of the pieces for building and running our application, let's put it all together and build it. 
+
+Your Dockerfile should look like this: 
+
+```
+# escape=`
+
+# ================================================================================================
+# Builder Stage
+# ================================================================================================
+
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8.1-windowsservercore-ltsc2022 as builder
+
+SHELL ["powershell"]
+
+WORKDIR C:\site
+
+COPY . C:\site
+
+RUN cd app/web; `
+	nuget restore ..\IBuySpyV3.sln -PackagesDirectory ..\packages; `
+	msbuild /p:Configuration=Release ..\IBuySpyV3.sln
+
+# ================================================================================================
+# Runtime Stage
+# ================================================================================================
+
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+
+SHELL ["powershell"]
+
+EXPOSE 80
+
+WORKDIR C:\site
+
+#
+## Setup Operating System
+#
+## Enable IIS Remote Administration
+RUN Add-WindowsFeature Web-Server; `
+    Add-WindowsFeature NET-Framework-45-ASPNET; `
+    Add-WindowsFeature Web-Asp-Net45; `
+    Add-WindowsFeature Web-Http-Tracing
+
+## Debug Only: Remove for production
+RUN net user localadmin Qwerty123456 /add; `
+    net localgroup Administrators localadmin /add; ` 
+    Install-WindowsFeature Web-Mgmt-Service; `
+    New-ItemProperty -Path "HKLM:\software\microsoft\WebManagement\Server" -Name "EnableRemoteManagement" -Value 1 -Force
+
+# Setup IIS Server
+RUN New-WebAppPool "GMSAAppPool"; `
+	# Configure root AppPool to run as LocalSystem 
+	Set-ItemProperty `
+		-Path "IIS:\AppPools\GMSAAppPool" `
+		-Name "processModel" `
+		-Value @{identitytype=0}; `
+	# Replace Default Web Site
+	Remove-WebSite -Name 'Default Web Site'; `
+	New-WebSite `
+		-Name "Site" `
+		-Port 80 `
+		-PhysicalPath "C:\site" `
+		-ApplicationPool "GMSAAppPool"; `
+	# Configure for Anonymous Authentication
+	Set-WebConfigurationProperty `
+		-Location "Site" `
+		-PSPath IIS:\ `
+		-Filter "system.webServer/security/authentication/anonymousAuthentication" `
+		-Name "enabled" `
+		-Value $true; `
+	# Configure monitoring
+	Set-WebConfigurationProperty `
+		-pspath 'MACHINE/WEBROOT/APPHOST' `
+		-filter "system.applicationHost/sites/siteDefaults/logFile" `
+		-name "logTargetW3C" -value "File,ETW";
+
+
+## Copy compiled files from Builder Stage
+COPY --from=builder C:\site\app\web c:\site\
+#
+## Create Web Applications and configure authentication
+#
+## Debug Only: Enable verbose logging for kerberos in the Windows Event Viewer
+RUN New-ItemProperty `
+	-Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters `
+	-Name LogLevel `
+	-PropertyType DWord `
+	-Value 1 `
+	-Force
+
+# Check application health against anonymous endpoint
+HEALTHCHECK CMD powershell -command `  
+    try { `
+     $response = iwr http://localhost:80 -UseBasicParsing; `
+     if ($response.StatusCode -eq 200) { return 0} `
+     else {return 1}; `
+    } catch { return 1 }
+
+# Start the metric hub entrypoint
+ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
+```
+1. If not already connected, connect to the jump box using Bastion via [RDP](https://learn.microsoft.com/azure/bastion/bastion-connect-vm-rdp-windows) or [SSH](https://learn.microsoft.com/en-us/azure/bastion/bastion-connect-vm-ssh-windows). See [HOL 1](../01-setup/README.md) if you haven't deployed the infrastructure already. Remember you will need to put ```appmigws\``` before your VM username to login to the box since it is domain joined. 
+2. Open up Docker Desktop for Windows by typing *Docker* into the Windows search box. Once it opens, go to your toolbar and right click on the tiny Docker icon. 
+   1. If it says *Switch to linux containers*, that means it is configured to support Windows Containers
+   2. If it says *Switch to windows containers*, click that option and confirm. Wait for it restart Docker before going to the next step.
+3. Open a Git Bash terminal. 
+4. Clone this repository to the jumpbox with the following command:
+   ```
+   git clone https://github.com/Azure-Samples/LegacyDotNetAppMigrationWorkshop.git
+   ```
+5. Unzip the [IBuySpy application](../../Shared/SourceApps/Apps/IBuySpy.zip) to a folder of your choosing
+6. Copy the contents of the Dockerfile you created above into the existing Dockerfile with the application
+7. If you'd like to test the container locally before deploying to AKS or App Service, you will need to update the SQL database connection string in the Web.config file. 
+   1. Grab the connection string from your Azure SQL database in the Portal
+   2. Replace the value for *ConnectionStringPaas* to your SQL connection string
+8. Using your Bash terminal, run the docker build command from the web folder:
+   ```
+   cd app/web
+   docker build -t ibuyspy:v1 -f Dockerfile .
+   ```
+9.  If you updated the SQL connection string, you can run the following command to test your container locally once it has finished the build:
 	```
-1. Add an Existing item to the solution (not the web site) and navigate to where you created the dockerfile in the previous step
-
-1. Add the following to the Dockerfile
-
-    ````docker
-    # escape=`
-    FROM microsoft/aspnet:3.5-windowsservercore-10.0.14393.1715
-    SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
-
-    RUN Remove-Website 'Default Web Site';
-
-    # Set up website: Jobs
-    RUN New-Item -Path 'C:\inetpub\wwwroot\Jobs' -Type Directory -Force;
-
-    RUN New-Website -Name 'JobsWebSite' -PhysicalPath 'C:\inetpub\wwwroot\Jobs' -Port 80 -ApplicationPool '.NET v2.0' -Force;
-
-    EXPOSE 80
-
-    COPY ["jobssite", "/inetpub/wwwroot/Jobs"]
-
-    RUN $path='C:\inetpub\wwwroot\Jobs'; `
-        $acl = Get-Acl $path; `
-        $newOwner = [System.Security.Principal.NTAccount]('BUILTIN\IIS_IUSRS'); `
-        $acl.SetOwner($newOwner); `
-        dir -r $path | Set-Acl -aclobject  $acl
-    ````
-
-
-1. Since this is an older site, .NET 2.0 did not support Roslyn. Right-click on the web project and select `Manage Nuget Packages`
-
-    ![image](./media/2018-03-20_1-59-06.png)
-
-1. If you see any of the following, uninstall them.
-
-    ![image](./media/2018-03-20_2-00-44.png)
-
-    ![image](./media/2018-03-20_2-01-05.png)
-
-1. Build the solution
-
-    ![image](./media/2018-03-20_2-03-48.png)
-
-1. Copy the solution from your Jump VM to the Windows Container Host. In this case it has been copied to `C:\upgrades\JobsWebSite`
-	The Solution on the jump box may be in two parts depending on how it is saves. Be sure to copy the website and the solution folder.
-	For Example if you choose the defaults when creating the project and adding the website, you will find the solution under c:\users\appmigadmin\documents\visual studio 2017\projects and the websites under c:\users\appmigadmin\documents\visual studio 2017\websites
-	Copy the solution over first, and copy the website over inside the solution folder
-
-1. Open a command prompt or Powershell and run the following command:
-
-    ````powershell
-    cd\upgrades\jobswebsite
-    docker build -t jobswebsite ./
-    ````
-
-1. Now run a container using the image
-    ````powershell
-    docker run -d -p 80:80 -h chost-gmsa --security-opt "credentialspec=file://win.json" jobswebsite --name jobswebsite
-    ````
-
-    > Note: If there is still a container running on port 80, you will need to stop it using docker stop <containername> check using docker ps and look at what is running and the ports it is using
-
-1. Verify the container is running
-
-    ````powershell
-        PS C:\upgrades\jobswebsite> docker ps
-        CONTAINER ID        IMAGE               COMMAND                   CREATED             STATUS              PORTS                NAMES
-        f6b419093d17        jobswebsite         "C:\\ServiceMonitor..."   6 seconds ago       Up 2 seconds        0.0.0.0:80->80/tcp   brave_clarke
-    ````
-    ````powershell
-    docker inspect -f "{{ .NetworkSettings.Networks.nat.IPAddress }}" [YOUR CONTAINER NAME]
-
-    # You should see something like this
-    172.19.102.214
-    ```
-
-1. Open a browser and navigate to the IP address of the container to browse the site
-
-    ![image](./media/2018-03-21_0-39-06.png)
-
-## References
-
-* [Image2Docker](https://github.com/docker/communitytools-image2docker-win)
-* [Image2Docker IIS and ASP.NET](https://github.com/docker/communitytools-image2docker-win/blob/master/docs/IIS.md)
-
-## Summary
-
-In this hands-on lab, you learned how to:
-
-* Containerize and existing application using the Image2Docker community tools
-* Add Docker support to an existing legacy application
-
-----
-Copyright 2016 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.
+	docker run -d -p 80:80 ibuyspy:v1
+	```
