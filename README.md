@@ -119,7 +119,7 @@ In this session, we will learn techniques for migrating applications and databas
 
 [View PowerPoint](Presentation/Module07-Database-Migrations.pptx?raw=true)
 
-### HOL 7 - [Migrate Source Apps to Windows Containers](./HOL/07-app-to-container/Dockerfiles-for-Azure.md)
+### HOL 7 - [Migrate Source Apps to Windows Containers](./HOL/07-app-to-container/README.md)
 
 In this lab you will learn how to containerize legacy applications for native Azure services such as AKS and App Service. 
 
