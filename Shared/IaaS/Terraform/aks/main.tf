@@ -47,9 +47,6 @@ module "azure_container_registry"{
 }
 
 module "aks_cluster" {
-  depends_on = [ 
-    module.azure_key_vault 
-    ]
   source = "./modules/aks"
   access_key = var.access_key
   resource_group_location = module.resource_group.location
