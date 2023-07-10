@@ -38,6 +38,7 @@ This hands-on-lab has the following exercises:
 
 1. [Exercise 1: Deployment of Azure resources](#exercise-1-deployment-of-azure-resources)
 2. [Exercise 2: Monitoring your deployment](#exercise-2-monitoring-your-deployment)
+3. [Exercise 3: Deploy AKS using Terraform](../../Shared/IaaS/Terraform/aks/docs/aks-deploy.md)
 
 ### Exercise 1: Deployment of Azure resources
 

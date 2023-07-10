@@ -13,6 +13,8 @@ module "CAFResourceNames" {
 resource "random_string" "rg_name" {
   length = 4
   lower = true
+  special = false
+  min_lower = 4
 }
 
 resource "random_integer" "deployment" {
@@ -46,12 +48,20 @@ module "azure_container_registry"{
   random_instance     = random_integer.deployment.result
 }
 
+module "networking" {
+  source = "./modules/networking"
+  resource_group_name = module.resource_group.name
+  location = module.resource_group.location
+  dc-vnet-name = var.dc-vnet-name
+  dc-resource_group_name = var.dc-resource_group_name
+}
+
 module "aks_cluster" {
   source = "./modules/aks"
-  access_key = var.access_key
   resource_group_location = module.resource_group.location
   resource_group_name = module.resource_group.name
   dns_prefix = var.dns_prefix
   container_registry_id = module.azure_container_registry.acr_id
   key_vault_id = module.azure_key_vault.azurerm_key_vault_id
+  vnet_subnet_id = module.networking.subnet_id
 }

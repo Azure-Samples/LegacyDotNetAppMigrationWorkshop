@@ -28,7 +28,7 @@ resource "azurerm_log_analytics_workspace" "aks" {
 
 module "aks" {
   source = "./modules/aks"
-
+ vnet_subnet_id = var.vnet_subnet_id
   caf_basename        = module.CAFResourceNames.names
   dns_prefix          = var.dns_prefix
   resource_group_name = var.resource_group_name
@@ -55,12 +55,4 @@ resource "azurerm_role_assignment" "aks-to-acr" {
   role_definition_name = "AcrPull"
   principal_id         = module.aks.kubelet_id
 }
-
-# resource "azurerm_key_vault_access_policy" "kv_aks_access_policy" {
-#   tenant_id = data.azurerm_client_config.current.tenant_id
-#   object_id = local.current_user_id
-
-#   key_permissions    = var.key_permissions
-#   secret_permissions = var.secret_permissions
-# }
 

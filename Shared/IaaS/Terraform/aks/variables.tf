@@ -4,13 +4,8 @@ variable "resource_group_location" {
 }
 
 variable "resource_group_name_prefix" {
-  default     = "rg-"
+  default     = "rg-appmig-"
   description = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
-}
-
-variable "access_key" {
-  type      = string
-  sensitive = true
 }
 
 variable "backend_resource_group_name" {
@@ -22,9 +17,17 @@ variable "storage_account_name" {
 }
 
 variable "container_name" {
-  default = "akscs"
+  default = "tfstate"
 }
 
 variable "dns_prefix" {
   # update this in the .tfvars file
+}
+
+variable "dc-vnet-name" {
+  default = "app-mig-workshop-vnet"
+}
+
+variable "dc-resource_group_name" {
+  default = "appmigworkshop"
 }

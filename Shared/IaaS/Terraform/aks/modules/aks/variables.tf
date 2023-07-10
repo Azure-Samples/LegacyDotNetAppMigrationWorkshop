@@ -29,7 +29,4 @@ variable "container_name" {
   default = "akscs"
 }
 
-variable "access_key" {
-  type      = string
-  sensitive = true
-}
+variable "vnet_subnet_id" {}
