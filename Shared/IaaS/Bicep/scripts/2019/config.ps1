@@ -23,21 +23,7 @@ function DownloadAndExpand
         [string]$AppName
     )
 
-    Invoke-WebRequest "https://github.com/ivegamsft/AppMigrationWorkshop/raw/master/Shared/SourceApps/Apps/$AppName.zip" -OutFile "$AppName.zip"
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("$AppName.zip", "C:\Apps\$AppName")
-    ((Get-Content -path C:\Apps\$AppName\web.config -Raw) -replace '<sqlServerName>.appmig.local',$env:computername) | Set-Content -Path C:\Apps\$AppName\web.config
-   
-    Write-Output "Downloaded the $AppName web app" 
-}
-
-function DownloadNewApps
-{
-    param
-    (
-        [string]$AppName
-    )
-
-    Invoke-WebRequest "https://raw.githubusercontent.com/rellismicrosoft/appmigrationtemp/main/$AppName.zip" -OutFile "$AppName.zip"
+    Invoke-WebRequest "https://github.com/AppMigrationWorkshop/Sample-Applications/raw/main/Applications/$AppName.zip" -OutFile "$AppName.zip"
     [System.IO.Compression.ZipFile]::ExtractToDirectory("$AppName.zip", "C:\Apps\$AppName")
     ((Get-Content -path C:\Apps\$AppName\web.config -Raw) -replace '<sqlServerName>.appmig.local',$env:computername) | Set-Content -Path C:\Apps\$AppName\web.config
    
@@ -70,16 +56,16 @@ mkdir c:\Databases
 
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "CREATE LOGIN [${env:computername}\AppsSvcAcct] FROM WINDOWS" > C:\Databases\db.log
 
-Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
+Invoke-WebRequest "https://raw.githubusercontent.com/AppMigrationWorkshop/Sample-Applications/main/Databases/TimeTracker.bak" -OutFile "c:\Databases\timetracker.bak"
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "RESTORE DATABASE [TimeTracker] FROM DISK='C:\Databases\timetracker.bak' WITH MOVE 'tempname' TO 'C:\Databases\timetracker.mdf', MOVE 'TimeTracker_Log' TO 'C:\Databases\timetracker_log.ldf'" >> C:\Databases\db.log
 
-Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Classifieds.bak" -OutFile "c:\Databases\Classifieds.bak"
+Invoke-WebRequest "https://raw.githubusercontent.com/AppMigrationWorkshop/Sample-Applications/main/Databases/Classifieds.bak" -OutFile "c:\Databases\Classifieds.bak"
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "RESTORE DATABASE [Classifieds] FROM DISK='C:\Databases\Classifieds.bak' WITH MOVE 'Database' TO 'C:\Databases\classifieds.mdf', MOVE 'Database_log' TO 'C:\Databases\classifieds_log.ldf'" >> C:\Databases\db.log
 
-Invoke-WebRequest "https://raw.githubusercontent.com/ivegamsft/AppMigrationWorkshop/master/Shared/SourceApps/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
+Invoke-WebRequest "https://raw.githubusercontent.com/AppMigrationWorkshop/Sample-Applications/main/Databases/Jobs.bak" -OutFile "c:\Databases\Jobs.bak"
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "RESTORE DATABASE [Jobs] FROM DISK='C:\Databases\Jobs.bak' WITH MOVE 'EmptyDatabase' TO 'C:\Databases\jobs.mdf', MOVE 'EmptyDatabase_log' TO 'C:\Databases\jobs_log.ldf'" >> C:\Databases\db.log
 
-Invoke-WebRequest "https://raw.githubusercontent.com/rellismicrosoft/appmigrationtemp/master/IBuySpyv3.bak" -OutFile "c:\Databases\IBuySpyv3.bak"
+Invoke-WebRequest "https://raw.githubusercontent.com/AppMigrationWorkshop/Sample-Applications/main/Databases/IBuySpyv3.bak" -OutFile "c:\Databases\IBuySpyv3.bak"
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "RESTORE DATABASE [IBuySpyv3] FROM DISK='C:\Databases\IBuySpyv3.bak' WITH MOVE 'IBuySpyv3_Data' TO 'C:\Databases\IBuySpyv3_Data.mdf', MOVE 'IBuySpyv3_Log' TO 'C:\Databases\IBuySpyv3_Log.ldf'" >> C:\Databases\db.log
 
 SQLCMD -S lpc:${env:computername} -U sqladmin -P $sqlAdminPassword -Q "USE timetracker; CREATE USER [${env:computername}\AppsSvcAcct]; EXEC sp_addrolemember 'db_owner', '${env:computername}\AppsSvcAcct'" >> C:\Databases\db.log
