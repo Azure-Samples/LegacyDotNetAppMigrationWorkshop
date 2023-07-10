@@ -5,6 +5,7 @@
     "sqlAuthenticationLogin": "sqladmin",
     "sqlAuthenticationPassword": "<Choose SQL Password>",
     "ipAddressforRDP": "<Insert your IP Address>",
+    "domainControllerIp": "10.0.0.4",
     "resources": {
         "virtualNetworkName": "app-mig-workshop-vnet",
         "vmName": "app-vm-"
