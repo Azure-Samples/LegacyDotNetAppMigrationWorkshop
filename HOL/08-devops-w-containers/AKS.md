@@ -43,7 +43,7 @@ In HoLs 6 & 7, you learned how to deploy an application using GMSA onto AKS and 
 2. Modify your Web.config file to include the string to your SQL database. App Service provides a way to set the AppSettings outside of the application, but AKS does not so we need to manually add it to the deployment. To do this, change these values:
    1. ConnectionStringPaas -> Your SQL DB string
    2. DataConnectionString -> ConnectionStringPaas
-
+> **_NOTE:_** This is not the recommended secure practice for updating a database string and connection strings and/or passwords should never be committed to a GitHub repository. This is for demonstration purposes only. In this case, the application should be updated to use KeyVault to access its connection string or utilize Kubernetes secrets.  
 3. Create a manifests folder in the base of your repository and place the [deployment.yaml](manifests/deployment.yml) file in there. 
 4. Run the following commands in your Bash terminal to commit and push your application to the repo:
    ```
