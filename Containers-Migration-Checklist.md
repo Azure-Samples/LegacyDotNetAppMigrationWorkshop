@@ -1,5 +1,10 @@
 # .NET Migration to Azure Kubernetes Service Guide
 ## Architectural and Non-Functional Requirements Checklist
+
+
+Migrating a web application to Azure Kubernetes Service (AKS) involves careful planning and consideration to ensure a successful and smooth transition. As you analyze your application's architecture to determine its suitability for containerization and microservices this list attempts to provide guidance and key considerations to keep in mind during the migration process.</br>
+
+
 |  Topic       |  Guidance |
 |--------------|-----------|
 |Azure subscription that will host App Service Plan and other required services.|[Subscriptions, licenses, accounts, and tenants for Microsoft's cloud offerings](https://learn.microsoft.com/en-us/microsoft-365/enterprise/subscriptions-licenses-accounts-and-tenants-for-microsoft-cloud-offerings?view=o365-worldwide)|
