@@ -58,6 +58,10 @@ resource "azurerm_kubernetes_cluster" "akscluster" {
   oms_agent {
     log_analytics_workspace_id = var.la_id
   }
+
+  monitor_metrics {
+    annotations_allowed = []
+  }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "windows_node_pool" {

@@ -65,3 +65,7 @@ module "aks_cluster" {
   key_vault_id = module.azure_key_vault.azurerm_key_vault_id
   vnet_subnet_id = module.networking.subnet_id
 }
+
+module "aks_monitoring" {
+  source = "./modules/monitoring"
+}
