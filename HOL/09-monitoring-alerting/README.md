@@ -14,7 +14,7 @@ Ensure you have completed the previous HOLs
 	- [Overview](#overview)
 	- [Prerequisites](#prerequisites)
 	- [Exercises](#exercises)
-		- [Exercise 1: Monitoring AKS](#exercise-1-monitoring-aks)
+		- [Exercise 1: Monitoring Windows applications on AKS](#exercise-1-monitoring-windows-applications-on-aks)
 			- [Application Insights (Application)](#application-insights-application)
 			- [Azure Monitor (Application, Kubernetes objects and workloads)](#azure-monitor-application-kubernetes-objects-and-workloads)
 			- [Container Insights (Kubernetes objects and workloads)](#container-insights-kubernetes-objects-and-workloads)
@@ -29,10 +29,11 @@ WebApp/IIS
 
 [AppInsights Overview](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview?tabs=net)
 
-### Exercise 1: Monitoring AKS
+### Exercise 1: Monitoring Windows applications on AKS
 
 The Kubernetes environment typically has five levels: application, Kubernetes objects and workloads, managed cluster components, cluster level components, and network. For the purposes of this exercise, the focus is on the application and Kubernetes objects and workloads. For more information on monitoring cluster level resources and networking, read more about [Monitoring Kubernetes on Microsoft Learn](https://learn.microsoft.com/azure/azure-monitor/containers/monitor-kubernetes#monitor-level-1---network). 
 
+![Kubernetes monitoring layers](./media/layers-with-roles.png)
 
 #### Application Insights (Application)
 #### Azure Monitor (Application, Kubernetes objects and workloads)
