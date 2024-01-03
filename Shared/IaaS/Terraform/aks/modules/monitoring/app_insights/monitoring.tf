@@ -1,8 +1,8 @@
 resource "azurerm_application_insights" "spokeAI" {
   name                = "appInsights"
-  location            = vars.location
-  resource_group_name = vars.resourceGroupName
-  workspace_id        = vars.logAnalyticsWorkspaceId
+  location            = var.location
+  resource_group_name = var.resourceGroupName
+  workspace_id        = var.logAnalyticsWorkspaceId
   application_type    = "web"
 }
 

@@ -59,7 +59,7 @@ module "networking" {
 module "aks_cluster" {
   source = "./modules/aks"
   resource_group_location = module.resource_group.location
-  resource_group_name = module.resource_group.name
+  resource_group_name = module.resource_group.name  
   dns_prefix = var.dns_prefix
   container_registry_id = module.azure_container_registry.acr_id
   key_vault_id = module.azure_key_vault.azurerm_key_vault_id
@@ -68,4 +68,11 @@ module "aks_cluster" {
 
 module "aks_monitoring" {
   source = "./modules/monitoring"
+  resourceGroupName = module.resource_group.name
+  location = module.resource_group.location
+  clusterId = module.aks_cluster.aks_id
+  clusterName = module.aks_cluster.cluster_name
+  logAnalyticsWorkspaceId = module.aks_cluster.logAnalyticsWorkspaceId
+  enableAppInsights = var.enable_app_insights
+  enablePrometheus = var.enable_prometheus
 }

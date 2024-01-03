@@ -31,3 +31,11 @@ variable "dc-vnet-name" {
 variable "dc-resource_group_name" {
   default = "appmigworkshop"
 }
+
+variable "enable_app_insights" {
+  default = false
+}
+
+variable "enable_prometheus" {
+  default = false
+}

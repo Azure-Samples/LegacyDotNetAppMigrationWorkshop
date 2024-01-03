@@ -4,7 +4,7 @@
 
 module "CAFResourceNames" {
   source      = "../naming"
-  workload    = "aksgsma"
+  workload    = "aks"
   environment = "dev"
   region      = "eus"
   instance    = "001"
@@ -13,8 +13,8 @@ module "CAFResourceNames" {
 # Log Analytics for AKS
 resource "azurerm_log_analytics_workspace" "spokeLA" {
   name                = replace(module.CAFResourceNames.names.azurerm_log_analytics_workspace, "log", "log")
-  location            = azurerm_resource_group.spoke-rg.location
-  resource_group_name = azurerm_resource_group.spoke-rg.name
+  location            = var.location
+  resource_group_name = var.resourceGroupName
   sku                 = "PerGB2018"
   retention_in_days   = 30 # has to be between 30 and 730
 
@@ -22,18 +22,20 @@ resource "azurerm_log_analytics_workspace" "spokeLA" {
 }
 
 module "app_insights" {
-  source = "/app_insights"
+  source = "./app_insights"
   count = var.enableAppInsights ? 1 : 0
+  resourceGroupName = var.resourceGroupName
+  location = var.location
+  logAnalyticsWorkspaceId = azurerm_log_analytics_workspace.spokeLA.id
 }
 
 module "prometheus" {
-  source = "/prometheus"
+  source = "./prometheus"
   count = var.enablePrometheus ? 1 : 0
-}
-
-module "container_insights" {
-  source = "/container_insights"
-  count = var.enableContainerInsights ? 1 : 0
+  resourceGroupName = var.resourceGroupName
+  location = var.location
+  clusterName = var.clusterName
+  clusterId = var.clusterId
 }
 
 #############

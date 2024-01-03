@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "akscluster" {
   dns_prefix                = var.dns_prefix
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  kubernetes_version        = "1.25.5"
+  kubernetes_version        = var.kubernetes_version
   azure_policy_enabled      = true
   local_account_disabled    = true
   oidc_issuer_enabled       = true
@@ -59,9 +59,9 @@ resource "azurerm_kubernetes_cluster" "akscluster" {
     log_analytics_workspace_id = var.la_id
   }
 
-  monitor_metrics {
-    annotations_allowed = []
-  }
+  # monitor_metrics {
+  #   annotations_allowed = []
+  # }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "windows_node_pool" {
@@ -119,11 +119,6 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
 
     content {
       category = entry.value
-
-      retention_policy {
-        enabled = true
-        days    = 30
-      }
     }
   }
 
@@ -134,11 +129,6 @@ resource "azurerm_monitor_diagnostic_setting" "aks" {
     content {
       category = entry.value
       enabled  = true
-
-      retention_policy {
-        enabled = true
-        days    = 30
-      }
     }
   }
 }
@@ -151,6 +141,10 @@ output "aks_id" {
 
 output "node_pool_rg" {
   value = azurerm_kubernetes_cluster.akscluster.node_resource_group
+}
+
+output "cluster_name" {
+  value = azurerm_kubernetes_cluster.akscluster.name
 }
 
 # Managed Identities created for Addons

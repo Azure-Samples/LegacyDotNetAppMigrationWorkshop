@@ -15,3 +15,7 @@ variable "la_id" {}
 variable "dns_prefix" {}
 
 variable "vnet_subnet_id" {}
+
+variable "kubernetes_version" {
+  default = "1.27.7"
+}

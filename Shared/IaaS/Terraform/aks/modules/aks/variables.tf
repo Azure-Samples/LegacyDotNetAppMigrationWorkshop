@@ -1,9 +1,6 @@
 #############
 # VARIABLES #
 #############
-# variable "private_dns_zone_name" {
-#   # update this in the .tfvars file
-# }
 
 variable "dns_prefix" {
   # update this in the .tfvars file
