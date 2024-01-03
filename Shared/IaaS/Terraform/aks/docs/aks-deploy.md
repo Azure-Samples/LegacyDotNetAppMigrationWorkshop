@@ -4,10 +4,7 @@
    
 2. [Setup Azure storage to store the Terraform state](state-storage.md)
 
-
-
-
- 3. Login to Azure
+3. Login to Azure
 
     ```powershell
     az login 
@@ -45,4 +42,5 @@
     terraform apply --auto-approve 
     ```
 
-
+# Next Step
+:arrow_forward: [Return to HOL 1](../../../../../HOL/01-setup/README.md)

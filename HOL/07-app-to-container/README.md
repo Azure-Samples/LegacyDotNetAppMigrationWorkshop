@@ -28,6 +28,7 @@ This hands-on-lab has the following exercises:
 			- [Uses SQL database as the backend that is hosted locally on the same VM](#uses-sql-database-as-the-backend-that-is-hosted-locally-on-the-same-vm)
 			- [IIS \& Port 80](#iis--port-80)
 	- [Exercise 3: Put it all together and build your image](#exercise-3-put-it-all-together-and-build-your-image)
+- [Next Step](#next-step)
 
 ### Exercise 1: Basic Dockerfile structure
 
@@ -319,3 +320,5 @@ ENTRYPOINT	C:\\site\\metrichub\\runtime\\MetricHub.Entrypoint.exe;
 	```
 	docker run -d -p 80:80 ibuyspy:v1
 	```
+# Next Step
+:arrow_forward: [DevOps with containers](../08-devops-w-containers/README.md)

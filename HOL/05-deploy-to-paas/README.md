@@ -149,5 +149,7 @@ In this hands-on lab, you learned how to:
 * Create a GitHub workflow and deploy the application to the Azure App Service
 * Update App Settings of an application through App Service
 
+# Next Step
+:arrow_forward: [Windows Containers](../06-windows-containers/README.md)
 ---
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).

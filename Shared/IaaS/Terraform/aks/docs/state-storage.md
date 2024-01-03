@@ -7,9 +7,9 @@ This storage account will be used to store the state of each deployment step and
    az login
    az account set --subscription <YOUR SUBSCRIPTION ID>
    ```
-2. A PowerShell script titled "setupStateStore.ps1" has been supplied in the repository folder "Shared\IaaS\Terraform\scripts\" you may choose to run this script to create the needed storage account or continue with the instunctions below to create the storage account using Azure cli.  
+2. A PowerShell script titled "setupStateStore.ps1" has been supplied in the repository folder "Shared\IaaS\Terraform\scripts\" you may choose to run this script to create the needed storage account or continue with the instructions below to create the storage account using Azure cli.  
 &nbsp;
-    To run the script in PowerShell navigate to the repository folder "Shared\IaaS\Terraform\scripts\" the scrip tshould be run with the following parameters
+    To run the script in PowerShell navigate to the repository folder "Shared\IaaS\Terraform\scripts\" the script should be run with the following parameters
     ```
     .\setupStateStore.ps1 "$resourceGroupName=<resource group name>" "$location=<location>" "$storageAccountName=<storage account name>"
     ```  

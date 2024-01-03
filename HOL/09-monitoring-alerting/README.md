@@ -21,6 +21,8 @@ Ensure you have completed the previous HOLs
 		- [Prometheus and Grafana (Application, Kubernetes objects and workloads)](#prometheus-and-grafana-application-kubernetes-objects-and-workloads)
 	- [Exercise 2: Monitoring Virtual Machines](#exercise-2-monitoring-virtual-machines)
 	- [Summary](#summary)
+- [Next Step](#next-step)
+	- [:arrow\_forward: Going Live](#arrow_forward-going-live)
 
 
 
@@ -75,6 +77,8 @@ In this hands-on lab, you learned how to:
 
 * Set up monitoring using Azure services for containers and Virtual Machines
 
+# Next Step
+:arrow_forward: [Going Live](../10-going-live/README.md)
 ---
 
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

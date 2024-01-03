@@ -190,6 +190,8 @@ In this hands-on lab, you learned how to:
 * Configure source control integration for continuous integration
 * Deploy a .NET 7.0 application to Azure App Service with CI/CD
 
+# Next Step
+:arrow_forward: [Deploy applications to PaaS](../05-deploy-to-paas/README.md)
 ----
 
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

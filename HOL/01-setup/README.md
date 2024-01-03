@@ -2,7 +2,7 @@
 
 ## Overview
 
-In this lab, you will deploy a pre-built environment that you will use for the labs. The automated template will create 4 environments. Here is what is deployed:
+In this lab, you will deploy several pre-built environments that you will use for the subsequent labs. The automated template will create 4 environments. Here is what is deployed:
 
 ## Applications
 * Time tracker.  a .NET framework 3.5 web application with a SQL backend running on IIS7
@@ -20,10 +20,10 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 
 ## Target environment
 
-* Azure Kubernetes service with Hybrid Networking and windows containers
+* Azure Kubernetes Service with support for Windows containers
 * Azure Container Registry
 * Azure KeyVault
-* 4 Azure SQL databases
+* 4 Azure SQL databases (1 per application)
 * 1 Windows Server 2022 VM that will act as a domain controller
 * Point-to-Point VPN connectivity (simulated using VNet Pairing for this exercise)
 
@@ -36,11 +36,21 @@ In this lab, you will deploy a pre-built environment that you will use for the l
 
 This hands-on-lab has the following exercises:
 
-1. [Exercise 1: Deployment of Azure resources](#exercise-1-deployment-of-azure-resources)
-2. [Exercise 2: Monitoring your deployment](#exercise-2-monitoring-your-deployment)
-3. [Exercise 3: Deploy AKS using Terraform](../../Shared/IaaS/Terraform/aks/docs/aks-deploy.md)
+- [Setting up the source environment using Resource Manager Templates](#setting-up-the-source-environment-using-resource-manager-templates)
+  - [Overview](#overview)
+  - [Applications](#applications)
+  - [Source environment](#source-environment)
+  - [Target environment](#target-environment)
+  - [Prerequisites](#prerequisites)
+  - [Exercises](#exercises)
+    - [Exercise 1: Deployment of Azure resources for legacy environment](#exercise-1-deployment-of-azure-resources-for-legacy-environment)
+    - [Exercise 2: Monitoring your deployment](#exercise-2-monitoring-your-deployment)
+    - [Exercise 3: Deploy AKS using Terraform](#exercise-3-deploy-aks-using-terraform)
+  - [Summary](#summary)
+- [Next Step](#next-step)
+  - [:arrow\_forward: Investigate Source Applications](#arrow_forward-investigate-source-applications)
 
-### Exercise 1: Deployment of Azure resources
+### Exercise 1: Deployment of Azure resources for legacy environment
 
 For the deployment, we are using Azure Bicep to deploy the resources and setup the legacy applications for the labs. 
 
@@ -96,16 +106,20 @@ The idea of this exercise is to show you how to monitor a deployment, that is in
 
     ![image](./media/pic5.png)
 
+### Exercise 3: Deploy AKS using Terraform
 
+For the labs that use AKS ([6](../06-windows-containers/README.md), [7](../07-app-to-container/README.md), [8](../08-devops-w-containers/README.md), [9](../09-monitoring-alerting/README.md)), you will need an AKS environment setup for you. Please follow the instructions [here](../../Shared/IaaS/Terraform/aks/docs/aks-deploy.md) to deploy our AKS setup prior to completing those labs. 
 
 ## Summary
 
 In this hands-on lab, you learned how to:
 
 * Deploy Azure resources from an automated template
-* Log on to the Azure Portal
 * Use Deployment blade item of the Resource Group to monitor a deployment
+* Deploy AKS using Terraform
 
+# Next Step
+:arrow_forward: [Investigate Source Applications](../02-investigate-source-apps/README.md)
 ----
 
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

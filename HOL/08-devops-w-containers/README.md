@@ -21,5 +21,7 @@ In this hands-on lab, you learned how to:
 * Use CI/CD to deploy Windows Containers to AKS
 * Use CI/CD to deploy Windows Containers to App Service
 
+# Next Step
+:arrow_forward: [Monitoring applications on Azure](../09-monitoring-alerting/README.md)
 ----
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.

@@ -27,7 +27,8 @@ In this hands-on lab, you learned how to:
 * Configure and test a Windows Container gSMA Account on AKS and local Docker containers
 * Setup and deploy a Windows container on Azure App Service
 
-
+# Next Step
+:arrow_forward: [Moving application to a container](../07-app-to-container/README.md)
 ----
 
 Copyright 2023 Microsoft Corporation. All rights reserved. Except where otherwise noted, these materials are licensed under the terms of the MIT License. You may use them according to the license as is most appropriate for your project. The terms of this license can be found at https://opensource.org/licenses/MIT.
