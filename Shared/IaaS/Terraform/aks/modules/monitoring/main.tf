@@ -36,6 +36,7 @@ module "prometheus" {
   location = var.location
   clusterName = var.clusterName
   clusterId = var.clusterId
+  uniqueSuffix = var.uniqueSuffix
 }
 
 #############

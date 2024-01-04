@@ -8,7 +8,7 @@
 # It is referenced in the "identity" block in the azurerm_kubernetes_cluster resource.
 
 resource "azurerm_user_assigned_identity" "mi-aks-cp" {
-  name                = replace(module.CAFResourceNames.names.azurerm_user_assigned_identity, "msi", "aksmsi")
+  name                = replace(var.caf_basename.azurerm_user_assigned_identity, "msi", "aksmsi")
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
 }
@@ -17,7 +17,7 @@ resource "azurerm_user_assigned_identity" "mi-aks-cp" {
 # Log Analytics Workspace for Cluster
 
 resource "azurerm_log_analytics_workspace" "aks" {
-  name                = replace(module.CAFResourceNames.names.azurerm_log_analytics_workspace, "log", "akslog")
+  name                = replace(var.caf_basename.azurerm_log_analytics_workspace, "log", "akslog")
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
   sku                 = "PerGB2018"
@@ -29,7 +29,7 @@ resource "azurerm_log_analytics_workspace" "aks" {
 module "aks" {
   source = "./modules/aks"
  vnet_subnet_id = var.vnet_subnet_id
-  caf_basename        = module.CAFResourceNames.names
+  caf_basename        = var.caf_basename
   dns_prefix          = var.dns_prefix
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location

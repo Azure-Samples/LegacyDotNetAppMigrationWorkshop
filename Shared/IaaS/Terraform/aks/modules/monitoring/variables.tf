@@ -27,3 +27,7 @@ variable "clusterId" {
 variable "logAnalyticsWorkspaceId" {
   type = string
 }
+
+variable "uniqueSuffix" {
+  type = string
+}

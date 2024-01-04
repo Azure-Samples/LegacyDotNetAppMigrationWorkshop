@@ -17,6 +17,13 @@ resource "random_string" "rg_name" {
   min_lower = 4
 }
 
+resource "random_string" "grafana_name" {
+  length = 6
+  lower = true
+  special = false
+  min_lower = 4
+}
+
 resource "random_integer" "deployment" {
   min = 010
   max = 999
@@ -43,7 +50,7 @@ module "azure_container_registry"{
   source = "./modules/acr"
   resource_group_name = module.resource_group.name
   resource_group_location = module.resource_group.location
-  caf_basename        = module.CAFResourceNames.names
+  caf_basename        = module.CAFResourceNames.names.azurerm_container_registry
   caf_instance        = module.CAFResourceNames.instance
   random_instance     = random_integer.deployment.result
 }
@@ -64,6 +71,7 @@ module "aks_cluster" {
   container_registry_id = module.azure_container_registry.acr_id
   key_vault_id = module.azure_key_vault.azurerm_key_vault_id
   vnet_subnet_id = module.networking.subnet_id
+  caf_basename = module.CAFResourceNames.names
 }
 
 module "aks_monitoring" {
@@ -75,4 +83,5 @@ module "aks_monitoring" {
   logAnalyticsWorkspaceId = module.aks_cluster.logAnalyticsWorkspaceId
   enableAppInsights = var.enable_app_insights
   enablePrometheus = var.enable_prometheus
+  uniqueSuffix = random_string.grafana_name.result
 }

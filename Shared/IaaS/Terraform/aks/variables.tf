@@ -21,7 +21,6 @@ variable "container_name" {
 }
 
 variable "dns_prefix" {
-  # update this in the .tfvars file
 }
 
 variable "dc-vnet-name" {
@@ -33,9 +32,9 @@ variable "dc-resource_group_name" {
 }
 
 variable "enable_app_insights" {
-  default = false
+  default = true
 }
 
 variable "enable_prometheus" {
-  default = false
+  default = true
 }

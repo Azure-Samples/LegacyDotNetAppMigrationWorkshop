@@ -27,3 +27,7 @@ variable "container_name" {
 }
 
 variable "vnet_subnet_id" {}
+
+variable "caf_basename" {
+  
+}

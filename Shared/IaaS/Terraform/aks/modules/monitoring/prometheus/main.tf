@@ -5,7 +5,7 @@ resource "azurerm_monitor_workspace" "azureMonitorWorkspace" {
 }
 
 resource "azurerm_dashboard_grafana" "grafana" {
-  name                = "grafana"
+  name                = "grafana-${var.uniqueSuffix}"
   resource_group_name = var.resourceGroupName
   location            = var.location
 

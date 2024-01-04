@@ -65,7 +65,7 @@ resource "azurerm_kubernetes_cluster" "akscluster" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "windows_node_pool" {
-  name                  = var.caf_basename.aks_node_pool_windows
+  name                  = "winunp"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.akscluster.id
   vm_size               = "Standard_DS4_v2"
   enable_auto_scaling   = true
@@ -87,7 +87,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "windows_node_pool" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "linux_user_pool" {
-  name                  = var.caf_basename.aks_node_pool_linux
+  name                  = "linunp"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.akscluster.id
   vm_size               = "Standard_DS2_v2"
   os_disk_size_gb       = 30

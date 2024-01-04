@@ -8,12 +8,3 @@ resource "azurerm_key_vault" "vault" {
   sku_name                   = var.sku_name
   soft_delete_retention_days = 7
 }
-
-resource "random_string" "azurerm_key_vault_key_name" {
-  length  = 13
-  lower   = true
-  numeric = false
-  special = false
-  upper   = false
-}
-
