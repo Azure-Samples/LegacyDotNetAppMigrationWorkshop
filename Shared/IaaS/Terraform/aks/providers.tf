@@ -20,14 +20,15 @@ terraform {
     }
   }
    backend "azurerm" {
-      resource_group_name  = "tfstate"
-      storage_account_name = "<storage_account_name>"
-      container_name       = "tfstate"
-      key                  = "terraform.tfstate"
+      
   }
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
